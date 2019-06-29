@@ -1,5 +1,11 @@
 package hu.eteosf.gergokovacs.userorders.service;
 
+import static hu.eteosf.gergokovacs.userorders.service.mapper.OrderMapper.toListOfOrders;
+import static hu.eteosf.gergokovacs.userorders.service.mapper.OrderMapper.toOrder;
+import static hu.eteosf.gergokovacs.userorders.service.mapper.OrderMapper.toOrderEntity;
+
+import com.sun.org.apache.xpath.internal.operations.Bool;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 
+import hu.eteosf.gergokovacs.userorders.model.entity.OrderEntity;
 import hu.eteosf.gergokovacs.userorders.model.entity.UserEntity;
 import hu.eteosf.gergokovacs.userorders.repository.UserRepository;
 import hu.eteosf.gergokovacs.userorders.service.mapper.UserMapper;
@@ -29,22 +37,16 @@ public class DefaultUserService implements UserService {
 
     @Override
     public User getUser(String userId) {
-        LOGGER.debug("In getUser(userId: " + userId + ")");
-        final Optional<UserEntity> userEntityOptional = repository.findByUserId(userId);
+        LOGGER.debug("In DefaultUserService.getUser(userId: " + userId + ")");
+        final UserEntity fetchedUser = fetchUser(userId);
 
-        if (!userEntityOptional.isPresent()) {
-            // TODO: exception handling
-            throw new RuntimeException("No user found by the ID: " + userId);
-        }
-
-        LOGGER.debug("The retrieved entity: " + userEntityOptional.get().toString());
         LOGGER.info("User has been retrieved");
-        return UserMapper.toUser(userEntityOptional.get());
+        return UserMapper.toUser(fetchedUser);
     }
 
     @Override
     public List<User> getAllUser() {
-        LOGGER.debug("In getAllUser()");
+        LOGGER.debug("In DefaultUserService.getAllUser()");
 
         final Iterable<UserEntity> userEntities = repository.findAll();
 
@@ -60,7 +62,7 @@ public class DefaultUserService implements UserService {
 
     @Override
     public void createUser(User user) {
-        LOGGER.debug("In createUser(user: " + user.toString() + ")");
+        LOGGER.debug("In DefaultUserService.createUser(user: " + user.toString() + ")");
         final UserEntity userEntity = UserMapper.toUserEntity(user);
         LOGGER.debug("The mapped userEntity is : " + userEntity.toString());
 
@@ -71,14 +73,14 @@ public class DefaultUserService implements UserService {
 
     @Override
     public void deleteUser(String userId) {
-        LOGGER.debug("In deleteUser(userId: " + userId + ")");
+        LOGGER.debug("In DefaultUserService.deleteUser(userId: " + userId + ")");
         repository.deleteByUserId(userId);
         LOGGER.info("User has been deleted");
     }
 
     @Override
     public void updateUser(String userId, User user) {
-        LOGGER.debug("In updateUser(userId: " + userId + ", user: " + user.toString() + ")");
+        LOGGER.debug("In DefaultUserService.updateUser(userId: " + userId + ", user: " + user.toString() + ")");
 
         // TODO: exception handling
         if(user.getOrders() != null)
@@ -99,28 +101,120 @@ public class DefaultUserService implements UserService {
 
     @Override
     public List<Order> getAllOrdersOfUser(String userId) {
-        return null;
+        LOGGER.debug("In DefaultUserService.getAllOrdersOfUser(userId: " + userId + ")");
+
+        final UserEntity fetchedUser = fetchUser(userId);
+        final List<OrderEntity> orderEntities = fetchedUser.getOrders();
+
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("The orderEntities list: ");
+            for (OrderEntity OrderEntity : orderEntities) {
+                LOGGER.debug(OrderEntity.toString());
+            }
+        }
+        LOGGER.info("All orders have been retrieved");
+        return toListOfOrders(orderEntities);
     }
 
     @Override
     public void createOrderOfUser(String userId, Order order) {
+        LOGGER.debug("In DefaultUserService.createOrderOfUser(userId: " + userId + ", order: " + order.toString() +")");
 
+        final UserEntity fetchedUser = fetchUser(userId);
+        final OrderEntity orderEntity = toOrderEntity(order);
+        fetchedUser.addOrder(orderEntity);
+        repository.save(fetchedUser);
+
+        if(LOGGER.isDebugEnabled())
+            LOGGER.debug("The updated user's orders: " + fetchedUser.getOrders().toString());
+        LOGGER.info("The order has been added");
     }
 
     @Override
     public Order getOrderOfUser(String userId, String orderId) {
-        return null;
+        LOGGER.debug("In DefaultUserService.getOrderOfUser(userId: " + userId + ", orderId: " + orderId + ")");
+
+        final UserEntity fetchedUser = fetchUser(userId);
+        final List<OrderEntity> orderEntities = fetchedUser.getOrders();
+
+        OrderEntity resultOrder = null;
+        for (OrderEntity orderEntity : orderEntities) {
+            if(orderEntity.getOrderId().equals(orderId)) {
+                resultOrder = orderEntity;
+                break;
+            }
+        }
+        // TODO: exception handling
+        if(resultOrder == null)
+            throw new RuntimeException();
+
+        return toOrder(resultOrder);
     }
 
     @Override
     public void deleteOrderOfUser(String userId, String orderId) {
+        LOGGER.debug("In DefaultUserService.deleteOrderOfUser(userId: " + userId + ", orderId: " + orderId + ")");
 
+        final UserEntity fetchedUser = fetchUser(userId);
+        final List<OrderEntity> orderEntities = fetchedUser.getOrders();
+
+        boolean deleteSuccessful = false;
+        for (OrderEntity orderEntity : orderEntities) {
+            LOGGER.debug(orderEntity.toString());
+            if(orderEntity.getOrderId().equals(orderId) && orderEntity.getOrderStatus() == OrderEntity.OrderSatus.RECEIVED) {
+                fetchedUser.removeOrder(orderEntity);
+                repository.save(fetchedUser);
+                deleteSuccessful = true;
+                break;
+            }
+        }
+        // TODO: exception handling
+        if(!deleteSuccessful)
+            throw new RuntimeException();
+
+        LOGGER.debug("The fetched user after the delete: " + fetchedUser.toString());
+        LOGGER.info("The order has been deleted");
     }
 
     @Override
     public void updateOrderOfUser(String userId, String orderId, Order order) {
+        LOGGER.debug("In DefaultUserService.deleteOrderOfUser(userId: " + userId + ", orderId: " + orderId + ")");
 
+        final UserEntity fetchedUser = fetchUser(userId);
+        final List<OrderEntity> orderEntities = fetchedUser.getOrders();
+
+        boolean updateSuccessful = false;
+        for (OrderEntity orderEntity : orderEntities) {
+            LOGGER.debug(orderEntity.toString());
+            if(orderEntity.getOrderId().equals(orderId) && orderEntity.getOrderStatus() == OrderEntity.OrderSatus.RECEIVED) {
+                fetchedUser.removeOrder(orderEntity);
+                repository.save(fetchedUser);
+                updateSuccessful = true;
+                break;
+            }
+        }
+        // TODO: exception handling
+        if(!updateSuccessful)
+            throw new RuntimeException();
+
+        fetchedUser.addOrder(toOrderEntity(order));
+        LOGGER.debug("The fetched user after the delete: " + fetchedUser.toString());
+        LOGGER.info("The order has been deleted");
     }
+
+    private UserEntity fetchUser(String userId) {
+        final Optional<UserEntity> userEntityOptional = repository.findByUserId(userId);
+
+        if (!userEntityOptional.isPresent()) {
+            // TODO: exception handling
+            throw new RuntimeException("No user found by the ID: " + userId);
+        }
+
+        LOGGER.debug("The retrieved entity: " + userEntityOptional.get().toString());
+        return userEntityOptional.get();
+    }
+
+    
 
     /**
      *  Updates the data of the user. It does not update the orders of the user.

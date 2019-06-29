@@ -158,6 +158,8 @@ paths:
       summary: "Get an order of a user."
       description: "Retrieves the order identified by orderId, that is linked to the user identified by userId"
       operationId: "getOrderByIdOfUser"
+      produces:
+        - "application/json"
       parameters:
         - in: "path"
           name: "userId"

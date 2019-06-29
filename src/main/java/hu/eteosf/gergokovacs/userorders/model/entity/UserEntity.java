@@ -1,8 +1,5 @@
 package hu.eteosf.gergokovacs.userorders.model.entity;
 
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -38,7 +35,7 @@ public class UserEntity {
     @Column(name = "address")
     private String address;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderEntity> orders = new ArrayList<>();
 
     public UserEntity() { }
@@ -49,6 +46,21 @@ public class UserEntity {
         this.lastName = lastname;
         this.address = address;
         this.orders = orders;
+    }
+
+    public void addOrder(OrderEntity orderEntity){
+        orderEntity.setUser(this);
+        orders.add(orderEntity);
+    }
+
+    public void removeOrder(OrderEntity orderEntity) {
+        orders.remove(orderEntity);
+    }
+
+    public void updateOrder(OrderEntity oldOrder, OrderEntity newOrder) {
+        if(orders.remove(oldOrder)){
+            addOrder(newOrder);
+        }
     }
 
     public Long getId() {

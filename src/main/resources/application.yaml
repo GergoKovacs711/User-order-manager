@@ -1,7 +1,7 @@
 server:
   port: 8088
 
-logging.level.hu.eteosf.gkovacs.client: DEBUG
+logging.level.hu.eteosf.gergokovacs.userorders.service: DEBUG
 
 spring:
   jpa:

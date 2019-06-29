@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Collection;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -31,7 +30,7 @@ public class UserController implements UsersApi {
 
     @Override
     public ResponseEntity<Void> updateOrderById(@Valid Order body, String userId, String orderId) {
-        LOGGER.debug("in updateOrderById(body: " + body.toString() + ", userId: " + userId + ", orderId: " + orderId + ")");
+        LOGGER.debug("in UserController.updateOrderById(body: " + body.toString() + ", userId: " + userId + ", orderId: " + orderId + ")");
 
         userService.updateOrderOfUser(userId, orderId, body);
 
@@ -41,7 +40,7 @@ public class UserController implements UsersApi {
 
     @Override
     public ResponseEntity<Void> createOrderOfUser(@Valid Order body, String userId) {
-        LOGGER.debug("in createOrderOfUser(body: " + body.toString() + ", userId: " + userId + ")");
+        LOGGER.debug("in UserController.createOrderOfUser(body: " + body.toString() + ", userId: " + userId + ")");
 
         userService.createOrderOfUser(userId, body);
 
@@ -51,7 +50,7 @@ public class UserController implements UsersApi {
 
     @Override
     public ResponseEntity<Void> createUser(@Valid User body) {
-        LOGGER.debug("in createUser(body: " + body.toString() + ")");
+        LOGGER.debug("in UserController.createUser(body: " + body.toString() + ")");
 
         userService.createUser(body);
 
@@ -61,7 +60,7 @@ public class UserController implements UsersApi {
 
     @Override
     public ResponseEntity<Void> deleteOrderByIdOfUser(String userId, String orderId) {
-        LOGGER.debug("in deleteOrderByIdOfUser(userId: " + userId + ", orderId: " + orderId + ")");
+        LOGGER.debug("in UserController.deleteOrderByIdOfUser(userId: " + userId + ", orderId: " + orderId + ")");
 
         userService.deleteOrderOfUser(userId, orderId);
 
@@ -71,7 +70,7 @@ public class UserController implements UsersApi {
 
     @Override
     public ResponseEntity<Void> deleteUserById(String userId) {
-        LOGGER.debug(String.format("in deleteUserById(id: %s)", userId));
+        LOGGER.debug(String.format("in UserController.deleteUserById(id: %s)", userId));
 
         userService.deleteUser(userId);
 
@@ -81,7 +80,7 @@ public class UserController implements UsersApi {
 
     @Override
     public ResponseEntity<List<Order>> getAllOrdersOfUser(String userId) {
-        LOGGER.debug(String.format("in getAllOrdersOfUser(userId: %s)", userId));
+        LOGGER.debug(String.format("in UserController.getAllOrdersOfUser(userId: %s)", userId));
 
         final List<Order> result = userService.getAllOrdersOfUser(userId);
 
@@ -91,7 +90,7 @@ public class UserController implements UsersApi {
 
     @Override
     public ResponseEntity<List<User>> getAllUsers() {
-        LOGGER.debug("in getAllUsers()");
+        LOGGER.debug("in UserController.getAllUsers()");
 
         final List<User> userList = userService.getAllUser();
 
@@ -101,7 +100,7 @@ public class UserController implements UsersApi {
 
     @Override
     public ResponseEntity<Order> getOrderByIdOfUser(String userId, String orderId) {
-        LOGGER.debug("in getOrderByIdOfUser(userId: " + userId + ", orderId: " + orderId + ")");
+        LOGGER.debug("in UserController.getOrderByIdOfUser(userId: " + userId + ", orderId: " + orderId + ")");
 
         final Order result = userService.getOrderOfUser(userId, orderId);
 
@@ -111,7 +110,7 @@ public class UserController implements UsersApi {
 
     @Override
     public ResponseEntity<User> getUserById(String userId) {
-        LOGGER.debug(String.format("in getUserById(id: %s)", userId));
+        LOGGER.debug(String.format("in UserController.getUserById(id: %s)", userId));
 
         final User result = userService.getUser(userId);
 
@@ -121,7 +120,7 @@ public class UserController implements UsersApi {
 
     @Override
     public ResponseEntity<Void> updateUserById(@Valid User body, String userId) {
-        LOGGER.debug("in updateUserById(body: " + body.toString() + ", id:" + userId + ")");
+        LOGGER.debug("in UserController.updateUserById(body: " + body.toString() + ", id:" + userId + ")");
 
         userService.updateUser(userId, body);
 

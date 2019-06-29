@@ -1,9 +1,6 @@
 package hu.eteosf.gergokovacs.userorders.model.entity;
 
 
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -32,13 +29,13 @@ public class OrderEntity {
     private Long id;
 
     @Column(name = "order_id")
-    private String orederId;
+    private String orderId;
 
     @Enumerated(value = EnumType.STRING)
     @Column(name = "status")
-    private OrderSatus orderSatus;
+    private OrderSatus orderStatus;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "orderEntity", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "orderEntity", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductEntity> products = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -47,9 +44,9 @@ public class OrderEntity {
 
     public OrderEntity() { }
 
-    public OrderEntity(String orederId, OrderSatus orderSatus, List<ProductEntity> products, UserEntity user) {
-        this.orederId = orederId;
-        this.orderSatus = orderSatus;
+    public OrderEntity(String orderId, OrderSatus orderStatus, List<ProductEntity> products, UserEntity user) {
+        this.orderId = orderId;
+        this.orderStatus = orderStatus;
         this.products = products;
         this.user = user;
     }
@@ -62,20 +59,20 @@ public class OrderEntity {
         this.id = id;
     }
 
-    public String getOrederId() {
-        return orederId;
+    public String getOrderId() {
+        return orderId;
     }
 
-    public void setOrederId(String orederId) {
-        this.orederId = orederId;
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
     }
 
-    public OrderSatus getOrderSatus() {
-        return orderSatus;
+    public OrderSatus getOrderStatus() {
+        return orderStatus;
     }
 
-    public void setOrderSatus(OrderSatus orderSatus) {
-        this.orderSatus = orderSatus;
+    public void setOrderStatus(OrderSatus orderStatus) {
+        this.orderStatus = orderStatus;
     }
 
     public List<ProductEntity> getProducts() {
@@ -110,8 +107,8 @@ public class OrderEntity {
     @Override
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (orederId != null ? orederId.hashCode() : 0);
-        result = 31 * result + (orderSatus != null ? orderSatus.hashCode() : 0);
+        result = 31 * result + (orderId != null ? orderId.hashCode() : 0);
+        result = 31 * result + (orderStatus != null ? orderStatus.hashCode() : 0);
         result = 31 * result + (products != null ? products.hashCode() : 0);
         result = 31 * result + (user != null ? user.hashCode() : 0);
         return result;
@@ -119,7 +116,7 @@ public class OrderEntity {
 
     @Override
     public String toString() {
-        return "OrderEntity{" + "id=" + id + ", orederId='" + orederId + '\'' + ", orderSatus=" + orderSatus + ", products=" + products
+        return "OrderEntity{" + "id=" + id + ", orderId='" + orderId + '\'' + ", orderStatus=" + orderStatus + ", products=" + products
                 + '}';
     }
 
