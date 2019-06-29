@@ -9,4 +9,6 @@
     <include file="changelog/02-insert-user-test-data.xml" relativeToChangelogFile="true"/>
     <include file="changelog/03-create-order-table.xml" relativeToChangelogFile="true"/>
     <include file="changelog/04-insert-order-test-data.xml" relativeToChangelogFile="true"/>
+    <include file="changelog/05-create-product-table.xml" relativeToChangelogFile="true"/>
+    <include file="changelog/06-insert-product-test-data.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

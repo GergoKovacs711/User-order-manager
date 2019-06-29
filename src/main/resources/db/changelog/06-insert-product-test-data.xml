@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet id="06"
+               author="gergokovacs">
+        <insert tableName="products">
+            <column name="id">6</column>
+            <column name="product_id">1</column>
+            <column name="price">312300</column>
+            <column name="quantity">10</column>
+            <column name="order">3</column>
+        </insert>
+        <insert tableName="products">
+            <column name="id">7</column>
+            <column name="product_id">2</column>
+            <column name="price">41200</column>
+            <column name="quantity">4</column>
+            <column name="order">3</column>
+        </insert>
+        <insert tableName="products">
+            <column name="id">8</column>
+            <column name="product_id">3</column>
+            <column name="price">20000</column>
+            <column name="quantity">11</column>
+            <column name="order">4</column>
+        </insert>
+        <insert tableName="products">
+            <column name="id">9</column>
+            <column name="product_id">4</column>
+            <column name="price">4400</column>
+            <column name="quantity">17</column>
+            <column name="order">5</column>
+        </insert>
+        <insert tableName="products">
+            <column name="id">10</column>
+            <column name="product_id">5</column>
+            <column name="price">100</column>
+            <column name="quantity">66</column>
+            <column name="order">5</column>
+        </insert>
+        <insert tableName="products">
+            <column name="id">11</column>
+            <column name="product_id">6</column>
+            <column name="price">22200</column>
+            <column name="quantity">24</column>
+            <column name="order">5</column>
+        </insert>
+        <insert tableName="products">
+            <column name="id">12</column>
+            <column name="product_id">7</column>
+            <column name="price">11231</column>
+            <column name="quantity">55</column>
+            <column name="order">5</column>
+        </insert>
+    </changeSet>
+</databaseChangeLog>
