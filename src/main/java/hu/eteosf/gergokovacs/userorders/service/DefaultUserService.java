@@ -4,15 +4,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
 import hu.eteosf.gergokovacs.userorders.model.entity.UserEntity;
 import hu.eteosf.gergokovacs.userorders.repository.UserRepository;
+import hu.eteosf.gergokovacs.userorders.service.mapper.UserMapper;
 import io.swagger.model.Order;
 import io.swagger.model.User;
 
+@Transactional
 @Service
 public class DefaultUserService implements UserService {
     private final static Logger LOGGER = LoggerFactory.getLogger(DefaultUserService.class);
@@ -26,13 +29,32 @@ public class DefaultUserService implements UserService {
 
     @Override
     public User getUser(String id) {
-        
+        LOGGER.debug("In getUser(id: " + id + ")");
+        final Optional<UserEntity> userEntityOptional = repository.findByUserId(id);
 
+        if (!userEntityOptional.isPresent()) {
+            throw new RuntimeException("No user found by the ID: " + id);
+        }
+
+        LOGGER.debug("The retrieved entity: " + userEntityOptional.get().toString());
+        LOGGER.info("Customer has been retrieved");
+        return UserMapper.toUser(userEntityOptional.get());
     }
 
     @Override
     public List<User> getAllUser() {
-        return null;
+        LOGGER.debug("In getAllUser()");
+
+        final Iterable<UserEntity> userEntities = repository.findAll();
+
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("The user collection: ");
+            for (UserEntity userEntity : userEntities) {
+                LOGGER.debug(userEntity.toString());
+            }
+        }
+        LOGGER.info("All users have been retrieved");
+        return UserMapper.toListOfUser(userEntities);
     }
 
     @Override
