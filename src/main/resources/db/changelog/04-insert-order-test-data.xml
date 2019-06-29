@@ -10,19 +10,19 @@
             <column name="id">3</column>
             <column name="order_id">1</column>
             <column name="status">DELIVERED</column>
-            <column name="user">1</column>
+            <column name="users">1</column>
         </insert>
         <insert tableName="orders">
             <column name="id">4</column>
             <column name="order_id">2</column>
             <column name="status">RECEIVED</column>
-            <column name="user">1</column>
+            <column name="users">1</column>
         </insert>
         <insert tableName="orders">
             <column name="id">5</column>
             <column name="order_id">3</column>
             <column name="status">SHIPPED</column>
-            <column name="user">2</column>
+            <column name="users">2</column>
         </insert>
     </changeSet>
 </databaseChangeLog>

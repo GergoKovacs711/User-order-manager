@@ -8,16 +8,16 @@
                author="gergokovacs">
         <insert tableName="users">
             <column name="id">1</column>
-            <column name="user_id">1</column>
-            <column name="firstname">Gergo</column>
-            <column name="lastname">Kovacs</column>
+            <column name="user_id">222</column>
+            <column name="first_name">Gergo</column>
+            <column name="last_name">Kovacs</column>
             <column name="address">3571, Miskolc, Arany Janos utca, 3</column>
         </insert>
         <insert tableName="users">
             <column name="id">2</column>
-            <column name="user_id">2</column>
-            <column name="firstname">Péter</column>
-            <column name="lastname">Nagy</column>
+            <column name="user_id">111</column>
+            <column name="first_name">Péter</column>
+            <column name="last_name">Nagy</column>
             <column name="address">3421, Bükksodronyos, Nagy Feró utca, 22</column>
         </insert>
     </changeSet>

@@ -14,8 +14,8 @@
             <column name="status" type="varchar(50)">
                 <constraints nullable="false" unique="false"/>
             </column>
-            <column name="user" type="bigint">
-                <constraints nullable="false" unique="false" foreignKeyName="user" references="users(id)"/>
+            <column name="users" type="bigint">
+                <constraints nullable="false" unique="false" foreignKeyName="users" references="users(id)"/>
             </column>
         </createTable>
     </changeSet>

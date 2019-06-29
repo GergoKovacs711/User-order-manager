@@ -17,8 +17,8 @@
             <column name="quantity" type="int">
                 <constraints nullable="false" unique="false"/>
             </column>
-            <column name="order" type="int">
-                <constraints nullable="false" unique="false" foreignKeyName="order" references="orders(id)"/>
+            <column name="orders" type="int">
+                <constraints nullable="false" unique="false" foreignKeyName="orders" references="orders(id)"/>
             </column>
         </createTable>
     </changeSet>
