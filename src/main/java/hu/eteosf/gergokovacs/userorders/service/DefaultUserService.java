@@ -59,7 +59,13 @@ public class DefaultUserService implements UserService {
 
     @Override
     public void createUser(User user) {
+        LOGGER.debug("In createUser(user: " + user.toString() + ")");
+        final UserEntity userEntity = UserMapper.toUserEntity(user);
+        LOGGER.debug("The mapped userEntity is : " + userEntity.toString());
 
+        final UserEntity resultEntity = repository.save(userEntity);
+        LOGGER.debug("The resultEntity: " + resultEntity.toString());
+        LOGGER.info("User has been created");
     }
 
     @Override

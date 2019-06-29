@@ -9,6 +9,6 @@
                id="00">
         <createSequence catalogName="cat" cycle="false"
                         incrementBy="1" ordered="true" schemaName="public"
-                        sequenceName="hibernate_sequence" startValue="10" />
+                        sequenceName="hibernate_sequence" startValue="15" />
     </changeSet>
 </databaseChangeLog>
