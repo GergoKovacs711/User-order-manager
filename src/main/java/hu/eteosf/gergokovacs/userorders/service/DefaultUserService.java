@@ -119,6 +119,7 @@ public class DefaultUserService implements UserService {
 
         final UserEntity fetchedUser = fetchUser(userId);
         final OrderEntity orderEntity = toOrderEntity(order);
+        orderEntity.setOrderStatus(OrderEntity.OrderSatus.RECEIVED);
         fetchedUser.addOrder(orderEntity);
         repository.save(fetchedUser);
 
@@ -134,12 +135,11 @@ public class DefaultUserService implements UserService {
         final UserEntity fetchedUser = fetchUser(userId);
         final List<OrderEntity> orderEntities = fetchedUser.getOrders();
 
-        UserServiceLambda<OrderEntity, OrderEntity> getOrderByOrderIdLambda = (OrderEntity entity) -> {
+        final OrderEntity resultOrder = processList(orderEntities, (OrderEntity entity) -> {
             if(entity.getOrderId().equals(orderId))
                 return entity;
             return null;
-        };
-        final OrderEntity resultOrder = processList(orderEntities, getOrderByOrderIdLambda);
+        });
 
         // TODO: exception handling
         if(resultOrder == null)
@@ -155,21 +155,18 @@ public class DefaultUserService implements UserService {
         final UserEntity fetchedUser = fetchUser(userId);
         final List<OrderEntity> orderEntities = fetchedUser.getOrders();
 
+        final OrderEntity resultOrder = processList(orderEntities, (OrderEntity entity) -> {
+            if(entity.getOrderId().equals(orderId) && entity.getOrderStatus() == OrderEntity.OrderSatus.RECEIVED)
+                return entity;
+            return null;
+        });
 
-
-        boolean deleteSuccessful = false;
-        for (OrderEntity orderEntity : orderEntities) {
-            LOGGER.debug(orderEntity.toString());
-            if(orderEntity.getOrderId().equals(orderId) && orderEntity.getOrderStatus() == OrderEntity.OrderSatus.RECEIVED) {
-                fetchedUser.removeOrder(orderEntity);
-                repository.save(fetchedUser);
-                deleteSuccessful = true;
-                break;
-            }
-        }
         // TODO: exception handling
-        if(!deleteSuccessful)
+        if(resultOrder == null)
             throw new RuntimeException();
+
+        fetchedUser.removeOrder(resultOrder);
+        repository.save(fetchedUser);
 
         LOGGER.debug("The fetched user after the delete: " + fetchedUser.toString());
         LOGGER.info("The order has been deleted");
@@ -218,13 +215,11 @@ public class DefaultUserService implements UserService {
      *
      * @param list the list to be processed
      * @param lambda the calculation that has to be done on each of the given items
-     * @param <ReturnT> the return type of the lambda
-     * @param <DataT> the data type that is lambda consumes
-     * @return a ReturnT object if the lambda
+     * @return the last output of the lambda expression
      */
-    private <ReturnT, DataT> ReturnT processList(List<DataT> list, UserServiceLambda<DataT, ReturnT> lambda) {
-        ReturnT result = null;
-        for (DataT item : list) {
+    private OrderEntity processList(List<OrderEntity> list, OrderEntityLambda lambda) {
+        OrderEntity result = null;
+        for (OrderEntity item : list) {
             result = lambda.process(item);
             if(result != null)
                 break;
@@ -248,7 +243,7 @@ public class DefaultUserService implements UserService {
     }
 
     @FunctionalInterface
-    interface UserServiceLambda<DataT, ReturnT> {
-        ReturnT process(final DataT data);
+    interface OrderEntityLambda {
+        OrderEntity process(final OrderEntity data);
     }
 }
