@@ -70,10 +70,10 @@ public class UserController implements UsersApi {
     }
 
     @Override
-    public ResponseEntity<Void> deleteUserById(String id) {
-        LOGGER.debug(String.format("in deleteUserById(id: %s)", id));
+    public ResponseEntity<Void> deleteUserById(String userId) {
+        LOGGER.debug(String.format("in deleteUserById(id: %s)", userId));
 
-        userService.deleteUser(id);
+        userService.deleteUser(userId);
 
         LOGGER.info("Deleting user is successful");
         return ResponseEntity.ok().build();
@@ -110,20 +110,20 @@ public class UserController implements UsersApi {
     }
 
     @Override
-    public ResponseEntity<User> getUserById(String id) {
-        LOGGER.debug(String.format("in getUserById(id: %s)", id));
+    public ResponseEntity<User> getUserById(String userId) {
+        LOGGER.debug(String.format("in getUserById(id: %s)", userId));
 
-        final User result = userService.getUser(id);
+        final User result = userService.getUser(userId);
 
         LOGGER.info("Sending requested user");
         return ResponseEntity.ok(result);
     }
 
     @Override
-    public ResponseEntity<Void> updateUserById(@Valid User body, String id) {
-        LOGGER.debug("in updateUserById(body: " + body.toString() + ", id:" + id + ")");
+    public ResponseEntity<Void> updateUserById(@Valid User body, String userId) {
+        LOGGER.debug("in updateUserById(body: " + body.toString() + ", id:" + userId + ")");
 
-        userService.updateUser(id, body);
+        userService.updateUser(userId, body);
 
         LOGGER.info("User update is successful");
         return ResponseEntity.ok().build();
