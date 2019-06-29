@@ -1,8 +1,10 @@
 package hu.eteosf.gergokovacs.userorders.model.entity;
 
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -36,7 +38,7 @@ public class OrderEntity {
     @Column(name = "status")
     private OrderSatus orderSatus;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "orderEntity", cascade = CascadeType.MERGE)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "orderEntity", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<ProductEntity> products = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)

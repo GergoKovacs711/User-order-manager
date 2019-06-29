@@ -28,16 +28,17 @@ public class DefaultUserService implements UserService {
     }
 
     @Override
-    public User getUser(String id) {
-        LOGGER.debug("In getUser(id: " + id + ")");
-        final Optional<UserEntity> userEntityOptional = repository.findByUserId(id);
+    public User getUser(String userId) {
+        LOGGER.debug("In getUser(userId: " + userId + ")");
+        final Optional<UserEntity> userEntityOptional = repository.findByUserId(userId);
 
         if (!userEntityOptional.isPresent()) {
-            throw new RuntimeException("No user found by the ID: " + id);
+            // TODO: exception handling
+            throw new RuntimeException("No user found by the ID: " + userId);
         }
 
         LOGGER.debug("The retrieved entity: " + userEntityOptional.get().toString());
-        LOGGER.info("Customer has been retrieved");
+        LOGGER.info("User has been retrieved");
         return UserMapper.toUser(userEntityOptional.get());
     }
 
@@ -69,13 +70,31 @@ public class DefaultUserService implements UserService {
     }
 
     @Override
-    public void deleteUser(String id) {
-
+    public void deleteUser(String userId) {
+        LOGGER.debug("In deleteUser(userId: " + userId + ")");
+        repository.deleteByUserId(userId);
+        LOGGER.info("User has been deleted");
     }
 
     @Override
-    public void updateUser(String id, User user) {
+    public void updateUser(String userId, User user) {
+        LOGGER.debug("In updateUser(userId: " + userId + ", user: " + user.toString() + ")");
 
+        // TODO: exception handling
+        if(user.getOrders() != null)
+            throw new RuntimeException();
+
+        final Optional<UserEntity> userEntityOptional = repository.findByUserId(userId);
+
+        if (!userEntityOptional.isPresent()) {
+            // TODO: exception handling
+            throw new RuntimeException("No user found by the ID: " + userId);
+        }
+        final UserEntity resultEntity = updateUserEntity(user, userEntityOptional.get());
+        LOGGER.debug("The updated entity: " + resultEntity.toString());
+
+        repository.save(resultEntity);
+        LOGGER.info("User has been updated");
     }
 
     @Override
@@ -101,5 +120,20 @@ public class DefaultUserService implements UserService {
     @Override
     public void updateOrderOfUser(String userId, String orderId, Order order) {
 
+    }
+
+    /**
+     *  Updates the data of the user. It does not update the orders of the user.
+     *
+     * @param from the data that is used to update the UserEntity
+     * @param to the UserEntity to be updated
+     * @return the updated UserEntity
+     */
+    private UserEntity updateUserEntity(User from, UserEntity to) {
+        to.setUserId(from.getUserId());
+        to.setFirstName(from.getFirstName());
+        to.setLastName(from.getLastName());
+        to.setAddress(from.getAddress());
+        return to;
     }
 }
