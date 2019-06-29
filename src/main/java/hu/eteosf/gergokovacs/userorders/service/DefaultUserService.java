@@ -4,8 +4,6 @@ import static hu.eteosf.gergokovacs.userorders.service.mapper.OrderMapper.toList
 import static hu.eteosf.gergokovacs.userorders.service.mapper.OrderMapper.toOrder;
 import static hu.eteosf.gergokovacs.userorders.service.mapper.OrderMapper.toOrderEntity;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
 
 import hu.eteosf.gergokovacs.userorders.model.entity.OrderEntity;
 import hu.eteosf.gergokovacs.userorders.model.entity.UserEntity;
@@ -137,13 +134,13 @@ public class DefaultUserService implements UserService {
         final UserEntity fetchedUser = fetchUser(userId);
         final List<OrderEntity> orderEntities = fetchedUser.getOrders();
 
-        OrderEntity resultOrder = null;
-        for (OrderEntity orderEntity : orderEntities) {
-            if(orderEntity.getOrderId().equals(orderId)) {
-                resultOrder = orderEntity;
-                break;
-            }
-        }
+        UserServiceLambda<OrderEntity, OrderEntity> getOrderByOrderIdLambda = (OrderEntity entity) -> {
+            if(entity.getOrderId().equals(orderId))
+                return entity;
+            return null;
+        };
+        final OrderEntity resultOrder = processList(orderEntities, getOrderByOrderIdLambda);
+
         // TODO: exception handling
         if(resultOrder == null)
             throw new RuntimeException();
@@ -157,6 +154,8 @@ public class DefaultUserService implements UserService {
 
         final UserEntity fetchedUser = fetchUser(userId);
         final List<OrderEntity> orderEntities = fetchedUser.getOrders();
+
+
 
         boolean deleteSuccessful = false;
         for (OrderEntity orderEntity : orderEntities) {
@@ -214,7 +213,24 @@ public class DefaultUserService implements UserService {
         return userEntityOptional.get();
     }
 
-    
+    /**
+     *  Processes through the list with the given lambda, if the result of the lambda is not null then the method returns early.
+     *
+     * @param list the list to be processed
+     * @param lambda the calculation that has to be done on each of the given items
+     * @param <ReturnT> the return type of the lambda
+     * @param <DataT> the data type that is lambda consumes
+     * @return a ReturnT object if the lambda
+     */
+    private <ReturnT, DataT> ReturnT processList(List<DataT> list, UserServiceLambda<DataT, ReturnT> lambda) {
+        ReturnT result = null;
+        for (DataT item : list) {
+            result = lambda.process(item);
+            if(result != null)
+                break;
+        }
+        return result;
+    }
 
     /**
      *  Updates the data of the user. It does not update the orders of the user.
@@ -229,5 +245,10 @@ public class DefaultUserService implements UserService {
         to.setLastName(from.getLastName());
         to.setAddress(from.getAddress());
         return to;
+    }
+
+    @FunctionalInterface
+    interface UserServiceLambda<DataT, ReturnT> {
+        ReturnT process(final DataT data);
     }
 }
