@@ -31,6 +31,10 @@ paths:
       responses:
         200:
           description: "All users have been retrieved"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/User"
 
     post:
       summary: "Create user."
@@ -63,6 +67,8 @@ paths:
       responses:
         200:
           description: "Retrieving user data was successful"
+          schema:
+            $ref: "#/definitions/User"
 
     delete:
       summary: "Delete a user."
@@ -118,6 +124,10 @@ paths:
       responses:
         200:
           description: "Retrieving orders was successful"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Order"
         404:
           description: "User not find by the given ID"
 
@@ -162,6 +172,8 @@ paths:
       responses:
         200:
           description: "Order has been retrieved"
+          schema:
+            $ref: "#/definitions/Order"
         404:
           description: "User or order not find by the given ID."
 
@@ -191,7 +203,7 @@ paths:
     put:
       summary: "Adds an order to a user."
       description: "Creates the order identified by orderId, that will be linked to the user identified by userId"
-      operationId: "createOrderById"
+      operationId: "updateOrderById"
       parameters:
         - in: "path"
           name: "userId"
