@@ -1,0 +1,275 @@
+swagger: "2.0"
+
+info:
+  title: "User order organiser"
+  description: "Organises the orders of users"
+  version: "1.0.0"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+
+tags:
+  - name: "User"
+    description: "The user who has the orders"
+  - name: "Order"
+    description: "An order which a user can have"
+  - name: "Product"
+    description: "The product information that is linked to the given order"
+
+schemes:
+  - "https"
+  - "http"
+
+paths:
+  /users:
+    get:
+      summary: "Get all users."
+      description: "Retrieves all existing users."
+      operationId: "getAllUsers"
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "All users have been retrieved"
+
+    post:
+      summary: "Create user."
+      description: "A new user is created from the provided data."
+      operationId: "createUser"
+      parameters:
+        - in: "body"
+          name: "user"
+          description: "The User object that is to be created."
+          required: true
+          schema:
+            $ref: "#/definitions/User"
+      responses:
+        201:
+          description: "User creation was successful"
+
+  /users/{userId}:
+    get:
+      summary: "Get a user."
+      description: "Retrieves the user identified by userId."
+      operationId: "getUserById"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "The natural ID of the user"
+          required: true
+          type: "string"
+      responses:
+        200:
+          description: "Retrieving user data was successful"
+
+    delete:
+      summary: "Delete a user."
+      description: "Deletes the user identified by userId"
+      operationId: "deleteUserById"
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "The natural ID of the user"
+          required: true
+          type: "string"
+      responses:
+        200:
+          description: "Deleting user data was successful"
+        404:
+          description: "User not find by the given ID"
+
+    put:
+      summary: "Update a users."
+      description: "Updates the user identified by userId."
+      operationId: "updateUserById"
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "The natural ID of the user"
+          required: true
+          type: "string"
+        - in: "body"
+          name: "users"
+          description: "The Users data used to update the existing user"
+          required: true
+          schema:
+            $ref: "#/definitions/User"
+      responses:
+        200:
+          description: "Updating user data was successful"
+        404:
+          description: "User not find by the given ID"
+
+  /users/{userId}/orders:
+    get:
+      summary: "Get all orders of a user."
+      description: "Retrieves all orders of the user identified by userId"
+      operationId: "getAllOrdersOfUser"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "userId"
+          description: "The natural ID of the user"
+          required: true
+          type: "string"
+      responses:
+        200:
+          description: "Retrieving orders was successful"
+        404:
+          description: "User not find by the given ID"
+
+    post:
+      summary: "Create an order of a user."
+      description: "Creates an order that will be linked to the user identified by userId"
+      operationId: "createOrderOfUser"
+      parameters:
+        - in: "path"
+          name: "userId"
+          description: "The natural ID of the user"
+          required: true
+          type: "string"
+        - in: "body"
+          name: "order"
+          description: "The Order data used to create the new Order"
+          required: true
+          schema:
+            $ref: "#/definitions/Order"
+      responses:
+        201:
+          description: "Order creation was successful"
+        404:
+          description: "User not find by the given ID."
+
+  /users/{userId}/orders/{orderId}:
+    get:
+      summary: "Get an order of a user."
+      description: "Retrieves the order identified by orderId, that is linked to the user identified by userId"
+      operationId: "getOrderByIdOfUser"
+      parameters:
+        - in: "path"
+          name: "userId"
+          description: "The natural ID of the user"
+          required: true
+          type: "string"
+        - in: "path"
+          name: "orderId"
+          description: "The natural ID of the order"
+          required: true
+          type: "string"
+      responses:
+        200:
+          description: "Order has been retrieved"
+        404:
+          description: "User or order not find by the given ID."
+
+    delete:
+      summary: "Delete an order of a user."
+      description: "Deletes the order identified by orderId, that is linked to the user identified by userId"
+      operationId: "deleteOrderByIdOfUser"
+      parameters:
+        - in: "path"
+          name: "userId"
+          description: "The natural ID of the user"
+          required: true
+          type: "string"
+        - in: "path"
+          name: "orderId"
+          description: "The natural ID of the order"
+          required: true
+          type: "string"
+      responses:
+        200:
+          description: "Deleting order was successful"
+        404:
+          description: "User or order not find by the given ID."
+        409:
+          description: "Order cannot be deleted"
+
+    put:
+      summary: "Adds an order to a user."
+      description: "Creates the order identified by orderId, that will be linked to the user identified by userId"
+      operationId: "createOrderById"
+      parameters:
+        - in: "path"
+          name: "userId"
+          description: "The natural ID of the user"
+          required: true
+          type: "string"
+        - in: "path"
+          name: "orderId"
+          description: "The natural ID of the order"
+          required: true
+          type: "string"
+        - in: "body"
+          name: "users"
+          description: "The Order data used to update the existing order"
+          required: true
+          schema:
+            $ref: "#/definitions/Order"
+      responses:
+        200:
+          description: "OK"
+        404:
+          description: "User or order not find by the given ID."
+        409:
+          description: "Order cannot be updated"
+
+definitions:
+  User:
+    type: "object"
+    required:
+      - userId
+      - firstName
+      - lastName
+      - address
+    properties:
+      userId:
+        type: "string"
+      firstName:
+        type: "string"
+      lastName:
+        type: "string"
+      address:
+        type: "string"
+      orders:
+        type: "array"
+        items:
+          $ref: "#/definitions/Order"
+  Order:
+    type: "object"
+    required:
+      - orderId
+      - products
+      - status
+    properties:
+      orderId:
+        type: "string"
+      products:
+        type: "array"
+        items:
+          $ref: "#/definitions/Product"
+      status:
+        type: "string"
+        description: "Order Status"
+        enum:
+          - "received"
+          - "shipped"
+          - "delivered"
+  Product:
+    type: "object"
+    required:
+      - productId
+      - price
+      - quantity
+    properties:
+      productId:
+        type: "string"
+      price:
+        type: "integer"
+        format: "int64"
+      quantity:
+        type: "integer"
+        format: "int32"

@@ -1,0 +1,21 @@
+server:
+  port: 8088
+
+logging.level.hu.eteosf.gkovacs.client: DEBUG
+
+spring:
+  jpa:
+    open-in-view: false
+    generate-ddl: false
+    show-sql: false
+    properties:
+      hibernate.dialect: org.hibernate.dialect.H2Dialect
+      hibernate.format_sql: true
+    hibernate:
+      ddl-auto: none
+  liquibase:
+    change-log: classpath:db/liquibase-changelog.xml
+  # default jdbc url is "jdbc:h2:mem:testdb" in Spring Boot 2
+  h2:
+    console:
+      enabled: true

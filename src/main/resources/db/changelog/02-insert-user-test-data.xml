@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet id="02"
+               author="gergokovacs">
+        <insert tableName="users">
+            <column name="id">1</column>
+            <column name="user_id">1</column>
+            <column name="firstname">Gergo</column>
+            <column name="lastname">Kovacs</column>
+            <column name="address">3571, Miskolc, Arany Janos utca, 3</column>
+        </insert>
+    </changeSet>
+</databaseChangeLog>
