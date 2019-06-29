@@ -168,7 +168,8 @@ public class DefaultUserService implements UserService {
         fetchedUser.removeOrder(resultOrder);
         repository.save(fetchedUser);
 
-        LOGGER.debug("The fetched user after the delete: " + fetchedUser.toString());
+        if(LOGGER.isDebugEnabled())
+            LOGGER.debug("The fetched user after the delete: " + fetchedUser.toString());
         LOGGER.info("The order has been deleted");
     }
 
@@ -179,22 +180,21 @@ public class DefaultUserService implements UserService {
         final UserEntity fetchedUser = fetchUser(userId);
         final List<OrderEntity> orderEntities = fetchedUser.getOrders();
 
-        boolean updateSuccessful = false;
-        for (OrderEntity orderEntity : orderEntities) {
-            LOGGER.debug(orderEntity.toString());
-            if(orderEntity.getOrderId().equals(orderId) && orderEntity.getOrderStatus() == OrderEntity.OrderSatus.RECEIVED) {
-                fetchedUser.removeOrder(orderEntity);
-                repository.save(fetchedUser);
-                updateSuccessful = true;
-                break;
-            }
-        }
+        final OrderEntity resultOrder = processList(orderEntities, (OrderEntity entity) -> {
+            if(entity.getOrderId().equals(orderId) && entity.getOrderStatus() == OrderEntity.OrderSatus.RECEIVED)
+                return entity;
+            return null;
+        });
         // TODO: exception handling
-        if(!updateSuccessful)
+        if(resultOrder == null)
             throw new RuntimeException();
 
+        fetchedUser.removeOrder(resultOrder);
+        repository.save(fetchedUser);
         fetchedUser.addOrder(toOrderEntity(order));
-        LOGGER.debug("The fetched user after the delete: " + fetchedUser.toString());
+
+        if(LOGGER.isDebugEnabled())
+            LOGGER.debug("The fetched user after the delete: " + fetchedUser.toString());
         LOGGER.info("The order has been deleted");
     }
 
@@ -206,8 +206,24 @@ public class DefaultUserService implements UserService {
             throw new RuntimeException("No user found by the ID: " + userId);
         }
 
-        LOGGER.debug("The retrieved entity: " + userEntityOptional.get().toString());
+        if(LOGGER.isDebugEnabled())
+            LOGGER.debug("The retrieved entity: " + userEntityOptional.get().toString());
         return userEntityOptional.get();
+    }
+
+    /**
+     *  Updates the data of the user. It does not update the orders of the user.
+     *
+     * @param from the data that is used to update the UserEntity
+     * @param to the UserEntity to be updated
+     * @return the updated UserEntity
+     */
+    private UserEntity updateUserEntity(User from, UserEntity to) {
+        to.setUserId(from.getUserId());
+        to.setFirstName(from.getFirstName());
+        to.setLastName(from.getLastName());
+        to.setAddress(from.getAddress());
+        return to;
     }
 
     /**
@@ -225,21 +241,6 @@ public class DefaultUserService implements UserService {
                 break;
         }
         return result;
-    }
-
-    /**
-     *  Updates the data of the user. It does not update the orders of the user.
-     *
-     * @param from the data that is used to update the UserEntity
-     * @param to the UserEntity to be updated
-     * @return the updated UserEntity
-     */
-    private UserEntity updateUserEntity(User from, UserEntity to) {
-        to.setUserId(from.getUserId());
-        to.setFirstName(from.getFirstName());
-        to.setLastName(from.getLastName());
-        to.setAddress(from.getAddress());
-        return to;
     }
 
     @FunctionalInterface

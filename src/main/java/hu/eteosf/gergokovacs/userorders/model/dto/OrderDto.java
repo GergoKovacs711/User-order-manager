@@ -1,3 +1,3 @@
 package hu.eteosf.gergokovacs.userorders.model.dto;
 
-public class OrdeDto {}
+public class OrderDto {}
