@@ -1,7 +1,6 @@
 package hu.eteosf.gergokovacs.userorders.model.entity;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -27,11 +26,11 @@ public class UserEntity {
     @Column(name = "user_id")
     private String userId;
 
-    @Column(name = "firstname")
+    @Column(name = "first_name")
     private String firstName;
 
-    @Column(name = "lastname")
-    private String lastname;
+    @Column(name = "last_name")
+    private String lastName;
 
     @Column(name = "address")
     private String address;
@@ -44,7 +43,7 @@ public class UserEntity {
     public UserEntity(String userId, String firstName, String lastname, String address, List<OrderEntity> orders) {
         this.userId = userId;
         this.firstName = firstName;
-        this.lastname = lastname;
+        this.lastName = lastname;
         this.address = address;
         this.orders = orders;
     }
@@ -73,12 +72,12 @@ public class UserEntity {
         this.firstName = firstName;
     }
 
-    public String getLastname() {
-        return lastname;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public String getAddress() {
@@ -115,7 +114,7 @@ public class UserEntity {
         int result = id != null ? id.hashCode() : 0;
         result = 31 * result + (userId != null ? userId.hashCode() : 0);
         result = 31 * result + (firstName != null ? firstName.hashCode() : 0);
-        result = 31 * result + (lastname != null ? lastname.hashCode() : 0);
+        result = 31 * result + (lastName != null ? lastName.hashCode() : 0);
         result = 31 * result + (address != null ? address.hashCode() : 0);
         result = 31 * result + (orders != null ? orders.hashCode() : 0);
         return result;
@@ -123,7 +122,7 @@ public class UserEntity {
 
     @Override
     public String toString() {
-        return "UserEntity{" + "id=" + id + ", userId='" + userId + '\'' + ", firstName='" + firstName + '\'' + ", lastname='" + lastname
+        return "UserEntity{" + "id=" + id + ", userId='" + userId + '\'' + ", firstName='" + firstName + '\'' + ", lastName='" + lastName
                 + '\'' + ", address='" + address + '\'' + ", orders=" + orders + '}';
     }
 }
