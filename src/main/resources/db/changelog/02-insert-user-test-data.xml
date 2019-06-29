@@ -13,5 +13,12 @@
             <column name="lastname">Kovacs</column>
             <column name="address">3571, Miskolc, Arany Janos utca, 3</column>
         </insert>
+        <insert tableName="users">
+            <column name="id">2</column>
+            <column name="user_id">2</column>
+            <column name="firstname">Péter</column>
+            <column name="lastname">Nagy</column>
+            <column name="address">3421, Bükksodronyos, Nagy Feró utca, 22</column>
+        </insert>
     </changeSet>
 </databaseChangeLog>

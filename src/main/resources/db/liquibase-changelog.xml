@@ -7,4 +7,6 @@
     <include file="changelog/00-create-sequence-table.xml" relativeToChangelogFile="true"/>
     <include file="changelog/01-create-user-table.xml" relativeToChangelogFile="true"/>
     <include file="changelog/02-insert-user-test-data.xml" relativeToChangelogFile="true"/>
+    <include file="changelog/03-create-order-table.xml" relativeToChangelogFile="true"/>
+    <include file="changelog/04-insert-order-test-data.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

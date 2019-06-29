@@ -122,9 +122,9 @@ public class OrderEntity {
     }
 
     public enum OrderSatus {
-        RECEIVED("received"),
-        SHIPPED("shipped"),
-        DELIVERED("delivered");
+        RECEIVED("RECEIVED"),
+        SHIPPED("SHIPPED"),
+        DELIVERED("DELIVERED");
 
         private String value;
 
