@@ -1,9 +1,12 @@
 package hu.eteosf.gergokovacs.userorders.service;
 
-import static hu.eteosf.gergokovacs.userorders.model.entity.OrderEntity.*;
-import static hu.eteosf.gergokovacs.userorders.service.mapper.OrderMapper.toListOfOrders;
-import static hu.eteosf.gergokovacs.userorders.service.mapper.OrderMapper.toOrder;
-import static hu.eteosf.gergokovacs.userorders.service.mapper.OrderMapper.toOrderEntity;
+import static hu.eteosf.gergokovacs.userorders.model.entity.OrderEntity.OrderEntitySatus;
+import static hu.eteosf.gergokovacs.userorders.service.mapper.entity.OrderEntityMapper.toListOfOrderDtos;
+import static hu.eteosf.gergokovacs.userorders.service.mapper.entity.OrderEntityMapper.toOrderDto;
+import static hu.eteosf.gergokovacs.userorders.service.mapper.entity.OrderEntityMapper.toOrderEntity;
+import static hu.eteosf.gergokovacs.userorders.service.mapper.entity.UserEntityMapper.toListOfUserDtos;
+import static hu.eteosf.gergokovacs.userorders.service.mapper.entity.UserEntityMapper.toUserDto;
+import static hu.eteosf.gergokovacs.userorders.service.mapper.entity.UserEntityMapper.toUserEntity;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,10 +21,13 @@ import hu.eteosf.gergokovacs.userorders.exception.OrderNotFoundException;
 import hu.eteosf.gergokovacs.userorders.exception.OrderUpdateException;
 import hu.eteosf.gergokovacs.userorders.exception.UserNotFoundException;
 import hu.eteosf.gergokovacs.userorders.exception.UserUpdateException;
+import hu.eteosf.gergokovacs.userorders.model.dto.OrderDto;
+import hu.eteosf.gergokovacs.userorders.model.dto.UserDto;
 import hu.eteosf.gergokovacs.userorders.model.entity.OrderEntity;
 import hu.eteosf.gergokovacs.userorders.model.entity.UserEntity;
 import hu.eteosf.gergokovacs.userorders.repository.UserRepository;
-import hu.eteosf.gergokovacs.userorders.service.mapper.UserMapper;
+import hu.eteosf.gergokovacs.userorders.service.mapper.dto.OrderDtoMapper;
+import hu.eteosf.gergokovacs.userorders.service.mapper.dto.UserDtoMapper;
 import io.swagger.model.Order;
 import io.swagger.model.User;
 
@@ -38,16 +44,16 @@ public class DefaultUserService implements UserService {
     }
 
     @Override
-    public User getUser(String userId) {
+    public UserDto getUser(String userId) {
         LOGGER.debug("In DefaultUserService.getUser(userId: " + userId + ")");
         final UserEntity fetchedUser = fetchUser(userId);
 
         LOGGER.info("User has been retrieved");
-        return UserMapper.toUser(fetchedUser);
+        return toUserDto(fetchedUser);
     }
 
     @Override
-    public List<User> getAllUser() {
+    public List<UserDto> getAllUser() {
         LOGGER.debug("In DefaultUserService.getAllUser()");
         final Iterable<UserEntity> userEntities = repository.findAll();
         if (LOGGER.isDebugEnabled()) {
@@ -57,13 +63,13 @@ public class DefaultUserService implements UserService {
             }
         }
         LOGGER.info("All users have been retrieved");
-        return UserMapper.toListOfUser(userEntities);
+        return toListOfUserDtos(userEntities);
     }
 
     @Override
     public void createUser(User user) {
         LOGGER.debug("In DefaultUserService.createUser(user: " + user.toString() + ")");
-        final UserEntity userEntity = UserMapper.toUserEntity(user);
+        final UserEntity userEntity = toUserEntity(UserDtoMapper.toUserDto(user));
         LOGGER.debug("The mapped userEntity is : " + userEntity.toString());
 
         final UserEntity resultEntity = repository.save(userEntity);
@@ -94,7 +100,7 @@ public class DefaultUserService implements UserService {
     }
 
     @Override
-    public List<Order> getAllOrdersOfUser(String userId) {
+    public List<OrderDto> getAllOrdersOfUser(String userId) {
         LOGGER.debug("In DefaultUserService.getAllOrdersOfUser(userId: " + userId + ")");
         final UserEntity fetchedUser = fetchUser(userId);
         final List<OrderEntity> orderEntities = fetchedUser.getOrders();
@@ -106,16 +112,16 @@ public class DefaultUserService implements UserService {
             }
         }
         LOGGER.info("All orders have been retrieved");
-        return toListOfOrders(orderEntities);
+        return toListOfOrderDtos(orderEntities);
     }
 
     @Override
     public void createOrderOfUser(String userId, Order order) {
         LOGGER.debug("In DefaultUserService.createOrderOfUser(userId: " + userId + ", order: " + order.toString() + ")");
         final UserEntity fetchedUser = fetchUser(userId);
-        final OrderEntity orderEntity = toOrderEntity(order);
+        final OrderEntity orderEntity = toOrderEntity(OrderDtoMapper.toOrderDto(order));
 
-        orderEntity.setOrderStatus(OrderSatus.RECEIVED);
+        orderEntity.setOrderStatus(OrderEntitySatus.RECEIVED);
         fetchedUser.addOrder(orderEntity);
         repository.save(fetchedUser);
 
@@ -124,7 +130,7 @@ public class DefaultUserService implements UserService {
     }
 
     @Override
-    public Order getOrderOfUser(String userId, String orderId) {
+    public OrderDto getOrderOfUser(String userId, String orderId) {
         LOGGER.debug("In DefaultUserService.getOrderOfUser(userId: " + userId + ", orderId: " + orderId + ")");
         final UserEntity fetchedUser = fetchUser(userId);
         final List<OrderEntity> orderEntities = fetchedUser.getOrders();
@@ -134,7 +140,7 @@ public class DefaultUserService implements UserService {
             return null;
         });
         if (resultOrder == null) throw new OrderNotFoundException("No order found by the ID: " + orderId);
-        return toOrder(resultOrder);
+        return toOrderDto(resultOrder);
     }
 
     @Override
@@ -148,7 +154,7 @@ public class DefaultUserService implements UserService {
             return null;
         });
         if (resultOrder == null) throw new OrderNotFoundException("No order found by the ID: " + orderId);
-        if (resultOrder.getOrderStatus() != OrderSatus.RECEIVED) {
+        if (resultOrder.getOrderStatus() != OrderEntitySatus.RECEIVED) {
             throw new OrderUpdateException("Only orders with 'recieved' status can be updated");
         }
         fetchedUser.removeOrder(resultOrder);
@@ -169,14 +175,14 @@ public class DefaultUserService implements UserService {
             return null;
         });
         if (resultOrder == null) throw new OrderNotFoundException("No order found by the ID: " + orderId);
-        if (resultOrder.getOrderStatus() != OrderSatus.RECEIVED) {
+        if (resultOrder.getOrderStatus() != OrderEntitySatus.RECEIVED) {
             throw new OrderUpdateException("Only orders with 'recieved' status can be updated");
         }
 
         fetchedUser.removeOrder(resultOrder);
         repository.save(fetchedUser);
         order.setStatus(Order.StatusEnum.RECEIVED);
-        fetchedUser.addOrder(toOrderEntity(order));
+        fetchedUser.addOrder(toOrderEntity(OrderDtoMapper.toOrderDto(order)));
 
         if (LOGGER.isDebugEnabled()) LOGGER.debug("The fetched user after the delete: " + fetchedUser.toString());
         LOGGER.info("The order has been deleted");

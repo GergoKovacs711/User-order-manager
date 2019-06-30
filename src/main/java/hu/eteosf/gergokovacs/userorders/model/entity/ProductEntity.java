@@ -1,6 +1,5 @@
 package hu.eteosf.gergokovacs.userorders.model.entity;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -19,7 +18,7 @@ public class ProductEntity {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "product_id")
+    @Column(name = "product_id", unique = true)
     private String productId;
 
     @Column(name = "price")
@@ -87,7 +86,6 @@ public class ProductEntity {
         if (o == null || getClass() != o.getClass()) return false;
 
         ProductEntity that = (ProductEntity) o;
-
         return this.id.equals(that.id);
     }
 

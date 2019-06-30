@@ -11,7 +11,11 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import hu.eteosf.gergokovacs.userorders.model.dto.OrderDto;
+import hu.eteosf.gergokovacs.userorders.model.dto.UserDto;
 import hu.eteosf.gergokovacs.userorders.service.UserService;
+import hu.eteosf.gergokovacs.userorders.service.mapper.dto.OrderDtoMapper;
+import hu.eteosf.gergokovacs.userorders.service.mapper.dto.UserDtoMapper;
 import io.swagger.api.UsersApi;
 import io.swagger.model.Order;
 import io.swagger.model.User;
@@ -80,7 +84,8 @@ public class UserController implements UsersApi {
     public ResponseEntity<List<Order>> getAllOrdersOfUser(String userId) {
         LOGGER.debug(String.format("in UserController.getAllOrdersOfUser(userId: %s)", userId));
 
-        final List<Order> result = userService.getAllOrdersOfUser(userId);
+        final List<OrderDto> orderDtos = userService.getAllOrdersOfUser(userId);
+        final List<Order> result = OrderDtoMapper.toListOfOrders(orderDtos);
 
         LOGGER.info("Retrieving all orders is successful");
         return ResponseEntity.ok(result);
@@ -90,17 +95,19 @@ public class UserController implements UsersApi {
     public ResponseEntity<List<User>> getAllUsers() {
         LOGGER.debug("in UserController.getAllUsers()");
 
-        final List<User> userList = userService.getAllUser();
+        final List<UserDto> userDtoList = userService.getAllUser();
+        final List<User> result = UserDtoMapper.toListOfUser(userDtoList);
 
         LOGGER.info("Retrieving all users is successful");
-        return ResponseEntity.ok(userList);
+        return ResponseEntity.ok(result);
     }
 
     @Override
     public ResponseEntity<Order> getOrderByIdOfUser(String userId, String orderId) {
         LOGGER.debug("in UserController.getOrderByIdOfUser(userId: " + userId + ", orderId: " + orderId + ")");
 
-        final Order result = userService.getOrderOfUser(userId, orderId);
+        final OrderDto orderDto = userService.getOrderOfUser(userId, orderId);
+        final Order result = OrderDtoMapper.toOrder(orderDto);
 
         LOGGER.info("Retrieving order is successful");
         return ResponseEntity.ok(result);
@@ -110,7 +117,8 @@ public class UserController implements UsersApi {
     public ResponseEntity<User> getUserById(String userId) {
         LOGGER.debug(String.format("in UserController.getUserById(id: %s)", userId));
 
-        final User result = userService.getUser(userId);
+        final UserDto userDto = userService.getUser(userId);
+        final User result = UserDtoMapper.toUser(userDto);
 
         LOGGER.info("Retrieving user is successful");
         return ResponseEntity.ok(result);
