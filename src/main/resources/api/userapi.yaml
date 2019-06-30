@@ -50,6 +50,10 @@ paths:
       responses:
         201:
           description: "User creation was successful"
+        406:
+          description: "Users must be created before adding and order. The orders field must be null or an empty array"
+        409:
+          description: "Unique ID violation! This ID is already in use."
 
   /users/{userId}:
     get:
@@ -157,6 +161,8 @@ paths:
           description: "Order creation was successful"
         404:
           description: "User not find by the given ID."
+        409:
+          description: "Unique ID violation! This ID is already in use."
 
   /users/{userId}/orders/{orderId}:
     get:

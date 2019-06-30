@@ -19,6 +19,7 @@ import java.util.Optional;
 
 import hu.eteosf.gergokovacs.userorders.exception.OrderNotFoundException;
 import hu.eteosf.gergokovacs.userorders.exception.OrderUpdateException;
+import hu.eteosf.gergokovacs.userorders.exception.UserCreationException;
 import hu.eteosf.gergokovacs.userorders.exception.UserNotFoundException;
 import hu.eteosf.gergokovacs.userorders.exception.UserUpdateException;
 import hu.eteosf.gergokovacs.userorders.model.dto.OrderDto;
@@ -69,6 +70,10 @@ public class DefaultUserService implements UserService {
     @Override
     public void createUser(User user) {
         LOGGER.debug("In DefaultUserService.createUser(user: " + user.toString() + ")");
+        if (user.getOrders() != null && user.getOrders().size() != 0) {
+            throw new UserCreationException(
+                    "Users must be created before adding and order. The orders field must be null or an empty array");
+        }
         final UserEntity userEntity = toUserEntity(UserDtoMapper.toUserDto(user));
         LOGGER.debug("The mapped userEntity is : " + userEntity.toString());
 
