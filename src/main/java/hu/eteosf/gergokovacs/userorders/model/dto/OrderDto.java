@@ -5,10 +5,10 @@ import java.util.List;
 
 public class OrderDto {
     private final String orderId;
-    private final OrderDtoSatus orderStatus;
+    private final OrderDtoStatus orderStatus;
     private final List<ProductDto> products;
 
-    public OrderDto(String orderId, OrderDtoSatus orderStatus, List<ProductDto> products) {
+    public OrderDto(String orderId, OrderDtoStatus orderStatus, List<ProductDto> products) {
         this.orderId = orderId;
         this.orderStatus = orderStatus;
         this.products = products;
@@ -18,7 +18,7 @@ public class OrderDto {
         return orderId;
     }
 
-    public OrderDtoSatus getOrderStatus() {
+    public OrderDtoStatus getOrderStatus() {
         return orderStatus;
     }
 
@@ -26,17 +26,39 @@ public class OrderDto {
         return Collections.unmodifiableList(products);
     }
 
-    public enum OrderDtoSatus {
+    public enum OrderDtoStatus {
         RECEIVED("RECEIVED"),
         SHIPPED("SHIPPED"),
         DELIVERED("DELIVERED");
 
         private String value;
-        OrderDtoSatus(String value) {
+        OrderDtoStatus(String value) {
             this.value = value;
         }
         public String toString() {
             return String.valueOf(this.value);
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        OrderDto that = (OrderDto) o;
+        return this.orderId.equals(that.getOrderId());
+    }
+
+    @Override
+    public int hashCode() {
+        int result = orderId != null ? orderId.hashCode() : 0;
+        result = 31 * result + (orderStatus != null ? orderStatus.hashCode() : 0);
+        result = 31 * result + (products != null ? products.hashCode() : 0);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "OrderDto{" + "orderId='" + orderId + '\'' + ", orderStatus=" + orderStatus + ", products=" + products + '}';
     }
 }

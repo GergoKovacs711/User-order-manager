@@ -38,7 +38,7 @@ public class OrderDtoMapper {
         return resultList;
     }
 
-    private static Order.StatusEnum toStatusEnum(OrderDto.OrderDtoSatus status) {
+    private static Order.StatusEnum toStatusEnum(OrderDto.OrderDtoStatus status) {
         switch (status) {
             case SHIPPED:
                 return Order.StatusEnum.SHIPPED;
@@ -51,14 +51,14 @@ public class OrderDtoMapper {
         }
     }
 
-    private static OrderDto.OrderDtoSatus toOrderDtoStatus(Order.StatusEnum status) {
+    private static OrderDto.OrderDtoStatus toOrderDtoStatus(Order.StatusEnum status) {
         switch (status) {
             case SHIPPED:
-                return OrderDto.OrderDtoSatus.SHIPPED;
+                return OrderDto.OrderDtoStatus.SHIPPED;
             case RECEIVED:
-                return OrderDto.OrderDtoSatus.RECEIVED;
+                return OrderDto.OrderDtoStatus.RECEIVED;
             case DELIVERED:
-                return OrderDto.OrderDtoSatus.DELIVERED;
+                return OrderDto.OrderDtoStatus.DELIVERED;
             default:
                 return null;
         }

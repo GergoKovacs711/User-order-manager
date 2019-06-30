@@ -40,20 +40,20 @@ public class OrderEntityMapper {
         return resultList;
     }
 
-    private static OrderDto.OrderDtoSatus toOrderDtoStatus(OrderEntitySatus status) {
+    private static OrderDto.OrderDtoStatus toOrderDtoStatus(OrderEntitySatus status) {
         switch (status) {
             case SHIPPED:
-                return OrderDto.OrderDtoSatus.SHIPPED;
+                return OrderDto.OrderDtoStatus.SHIPPED;
             case RECEIVED:
-                return OrderDto.OrderDtoSatus.RECEIVED;
+                return OrderDto.OrderDtoStatus.RECEIVED;
             case DELIVERED:
-                return OrderDto.OrderDtoSatus.DELIVERED;
+                return OrderDto.OrderDtoStatus.DELIVERED;
             default:
                 return null;
         }
     }
 
-    private static OrderEntitySatus toOrderEntityStatus(OrderDto.OrderDtoSatus status) {
+    private static OrderEntitySatus toOrderEntityStatus(OrderDto.OrderDtoStatus status) {
         switch (status) {
             case SHIPPED:
                 return OrderEntitySatus.SHIPPED;

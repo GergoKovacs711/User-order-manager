@@ -120,7 +120,6 @@ public class UserEntity {
         if (o == null || getClass() != o.getClass()) return false;
 
         UserEntity that = (UserEntity) o;
-
         return this.id.equals(that.id);
     }
 

@@ -100,7 +100,6 @@ public class OrderEntity {
         if (o == null || getClass() != o.getClass()) return false;
 
         OrderEntity that = (OrderEntity) o;
-
         return this.id.equals(that.id);
     }
 
