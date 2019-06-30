@@ -16,48 +16,54 @@
 
 	<properties>
 		<java.version>1.8</java.version>
+		<maven-compiler-plugin.version>3.5.1</maven-compiler-plugin.version>
 		<swagger-codegen-maven-plugin.version>3.0.0</swagger-codegen-maven-plugin.version>
 		<swagger-annotations.version>1.5.21</swagger-annotations.version>
+		<togglz-spring-boot-starter.version>2.6.1.Final</togglz-spring-boot-starter.version>
+		<spring-boot-starter.version>2.1.6.RELEASE</spring-boot-starter.version>
+		<org.liquibase.version>3.6.3</org.liquibase.version>
+		<com.h2database.version>1.4.197</com.h2database.version>
 	</properties>
 
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
+			<version>${spring-boot-starter.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-rest</artifactId>
+			<version>${spring-boot-starter.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+			<version>${spring-boot-starter.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.liquibase</groupId>
-			<artifactId>liquibase-core</artifactId>
-		</dependency>
-
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
+			<version>${spring-boot-starter.version}</version>
 			<scope>runtime</scope>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
+			<version>${spring-boot-starter.version}</version>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.liquibase</groupId>
+			<artifactId>liquibase-core</artifactId>
+			<version>${org.liquibase.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>runtime</scope>
+			<version>${com.h2database.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.swagger</groupId>
@@ -71,6 +77,7 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<version>${spring-boot-starter.version}</version>
 			</plugin>
 			<plugin>
 				<groupId>io.swagger.codegen.v3</groupId>
