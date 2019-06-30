@@ -40,10 +40,10 @@ public class UserEntity {
 
     public UserEntity() { }
 
-    public UserEntity(String userId, String firstName, String lastname, String address, List<OrderEntity> orders) {
+    public UserEntity(String userId, String firstName, String lastName, String address, List<OrderEntity> orders) {
         this.userId = userId;
         this.firstName = firstName;
-        this.lastName = lastname;
+        this.lastName = lastName;
         this.address = address;
         this.orders = orders;
     }

@@ -18,9 +18,7 @@ import io.swagger.model.User;
 
 @RestController
 public class UserController implements UsersApi {
-
     private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
-
     private UserService userService;
 
     @Autowired
@@ -84,7 +82,7 @@ public class UserController implements UsersApi {
 
         final List<Order> result = userService.getAllOrdersOfUser(userId);
 
-        LOGGER.info("Retrieving orders is successful");
+        LOGGER.info("Retrieving all orders is successful");
         return ResponseEntity.ok(result);
     }
 
@@ -94,7 +92,7 @@ public class UserController implements UsersApi {
 
         final List<User> userList = userService.getAllUser();
 
-        LOGGER.info("Sending all users");
+        LOGGER.info("Retrieving all users is successful");
         return ResponseEntity.ok(userList);
     }
 
@@ -104,7 +102,7 @@ public class UserController implements UsersApi {
 
         final Order result = userService.getOrderOfUser(userId, orderId);
 
-        LOGGER.info("Sending requested order");
+        LOGGER.info("Retrieving order is successful");
         return ResponseEntity.ok(result);
     }
 
@@ -114,7 +112,7 @@ public class UserController implements UsersApi {
 
         final User result = userService.getUser(userId);
 
-        LOGGER.info("Sending requested user");
+        LOGGER.info("Retrieving user is successful");
         return ResponseEntity.ok(result);
     }
 

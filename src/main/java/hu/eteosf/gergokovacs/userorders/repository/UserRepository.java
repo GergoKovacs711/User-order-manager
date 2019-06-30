@@ -8,5 +8,4 @@ import hu.eteosf.gergokovacs.userorders.model.entity.UserEntity;
 
 public interface UserRepository extends CrudRepository<UserEntity, Long> {
     Optional<UserEntity> findByUserId(String userId);
-    void deleteByUserId(String userId);
 }

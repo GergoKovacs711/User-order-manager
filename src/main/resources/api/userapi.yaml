@@ -69,6 +69,9 @@ paths:
           description: "Retrieving user data was successful"
           schema:
             $ref: "#/definitions/User"
+        404:
+          description: "User not find by the given ID"
+
 
     delete:
       summary: "Delete a user."
@@ -107,6 +110,8 @@ paths:
           description: "Updating user data was successful"
         404:
           description: "User not find by the given ID"
+        406:
+          description: "The orders field must be null or an empty array"
 
   /users/{userId}/orders:
     get:
@@ -257,7 +262,6 @@ definitions:
     required:
       - orderId
       - products
-      - status
     properties:
       orderId:
         type: "string"
