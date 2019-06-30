@@ -27,9 +27,6 @@ import hu.eteosf.gergokovacs.userorders.model.dto.UserDto;
 import hu.eteosf.gergokovacs.userorders.model.entity.OrderEntity;
 import hu.eteosf.gergokovacs.userorders.model.entity.UserEntity;
 import hu.eteosf.gergokovacs.userorders.repository.UserRepository;
-import hu.eteosf.gergokovacs.userorders.service.mapper.dto.OrderDtoMapper;
-import hu.eteosf.gergokovacs.userorders.service.mapper.dto.UserDtoMapper;
-import io.swagger.model.Order;
 import io.swagger.model.User;
 
 @Transactional
@@ -68,13 +65,13 @@ public class DefaultUserService implements UserService {
     }
 
     @Override
-    public void createUser(User user) {
-        LOGGER.debug("In DefaultUserService.createUser(user: " + user.toString() + ")");
-        if (user.getOrders() != null && user.getOrders().size() != 0) {
+    public void createUser(UserDto userDto) {
+        LOGGER.debug("In DefaultUserService.createUser(userDto: " + userDto.toString() + ")");
+        if (userDto.getOrders() != null && userDto.getOrders().size() != 0) {
             throw new UserCreationException(
                     "Users must be created before adding and order. The orders field must be null or an empty array");
         }
-        final UserEntity userEntity = toUserEntity(UserDtoMapper.toUserDto(user));
+        final UserEntity userEntity = toUserEntity(userDto);
         LOGGER.debug("The mapped userEntity is : " + userEntity.toString());
 
         final UserEntity resultEntity = repository.save(userEntity);
@@ -121,10 +118,10 @@ public class DefaultUserService implements UserService {
     }
 
     @Override
-    public void createOrderOfUser(String userId, Order order) {
-        LOGGER.debug("In DefaultUserService.createOrderOfUser(userId: " + userId + ", order: " + order.toString() + ")");
+    public void createOrderOfUser(String userId, OrderDto orderDto) {
+        LOGGER.debug("In DefaultUserService.createOrderOfUser(userId: " + userId + ", orderDto: " + orderDto.toString() + ")");
         final UserEntity fetchedUser = fetchUser(userId);
-        final OrderEntity orderEntity = toOrderEntity(OrderDtoMapper.toOrderDto(order));
+        final OrderEntity orderEntity = toOrderEntity(orderDto);
 
         orderEntity.setOrderStatus(OrderEntitySatus.RECEIVED);
         fetchedUser.addOrder(orderEntity);
@@ -170,8 +167,9 @@ public class DefaultUserService implements UserService {
     }
 
     @Override
-    public void updateOrderOfUser(String userId, String orderId, Order order) {
-        LOGGER.debug("In DefaultUserService.deleteOrderOfUser(userId: " + userId + ", orderId: " + orderId + ")");
+    public void updateOrderOfUser(String userId, String orderId, OrderDto orderDto) {
+        LOGGER.debug("In DefaultUserService.deleteOrderOfUser(userId: " +
+                        userId + ", orderId: " + orderId + ", orderDto:" + orderDto.toString() + ")");
         final UserEntity fetchedUser = fetchUser(userId);
         final List<OrderEntity> orderEntities = fetchedUser.getOrders();
 
@@ -183,11 +181,12 @@ public class DefaultUserService implements UserService {
         if (resultOrder.getOrderStatus() != OrderEntitySatus.RECEIVED) {
             throw new OrderUpdateException("Only orders with 'recieved' status can be updated");
         }
-
         fetchedUser.removeOrder(resultOrder);
         repository.save(fetchedUser);
-        order.setStatus(Order.StatusEnum.RECEIVED);
-        fetchedUser.addOrder(toOrderEntity(OrderDtoMapper.toOrderDto(order)));
+
+        final OrderEntity orderEntity = toOrderEntity(orderDto);
+        orderEntity.setOrderStatus(OrderEntitySatus.RECEIVED);
+        fetchedUser.addOrder(orderEntity);
 
         if (LOGGER.isDebugEnabled()) LOGGER.debug("The fetched user after the delete: " + fetchedUser.toString());
         LOGGER.info("The order has been deleted");

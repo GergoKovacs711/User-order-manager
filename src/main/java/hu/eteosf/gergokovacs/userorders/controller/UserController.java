@@ -34,7 +34,7 @@ public class UserController implements UsersApi {
     public ResponseEntity<Void> updateOrderById(@Valid Order body, String userId, String orderId) {
         LOGGER.debug("in UserController.updateOrderById(body: " + body.toString() + ", userId: " + userId + ", orderId: " + orderId + ")");
 
-        userService.updateOrderOfUser(userId, orderId, body);
+        userService.updateOrderOfUser(userId, orderId, OrderDtoMapper.toOrderDto(body));
 
         LOGGER.info("Order update is successful");
         return ResponseEntity.ok().build();
@@ -44,7 +44,7 @@ public class UserController implements UsersApi {
     public ResponseEntity<Void> createOrderOfUser(@Valid Order body, String userId) {
         LOGGER.debug("in UserController.createOrderOfUser(body: " + body.toString() + ", userId: " + userId + ")");
 
-        userService.createOrderOfUser(userId, body);
+        userService.createOrderOfUser(userId, OrderDtoMapper.toOrderDto(body));
 
         LOGGER.info("Creating order is successful");
         return ResponseEntity.status(HttpStatus.CREATED).build();
@@ -54,7 +54,7 @@ public class UserController implements UsersApi {
     public ResponseEntity<Void> createUser(@Valid User body) {
         LOGGER.debug("in UserController.createUser(body: " + body.toString() + ")");
 
-        userService.createUser(body);
+        userService.createUser(UserDtoMapper.toUserDto(body));
 
         LOGGER.info("Creating user is successful");
         return ResponseEntity.status(HttpStatus.CREATED).build();
