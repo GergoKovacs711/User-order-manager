@@ -8,7 +8,7 @@ import io.swagger.model.User;
 
 public interface UserService {
     UserDto getUser(String userId);
-    List<UserDto> getAllUser();
+    List<UserDto> getAllUsers();
     void createUser(UserDto user);
     void deleteUser(String userId);
     void updateUser(String userId, User user);

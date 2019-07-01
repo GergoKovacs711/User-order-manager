@@ -51,7 +51,7 @@ public class DefaultUserService implements UserService {
     }
 
     @Override
-    public List<UserDto> getAllUser() {
+    public List<UserDto> getAllUsers() {
         LOGGER.debug("In DefaultUserService.getAllUser()");
         final Iterable<UserEntity> userEntities = repository.findAll();
         if (LOGGER.isDebugEnabled()) {
