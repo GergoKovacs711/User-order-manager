@@ -1,4 +1,4 @@
-package hu.eteosf.gergokovacs.userorders.service.mapper.entity;
+package hu.eteosf.gergokovacs.userorders.service.mapper;
 
 import java.util.ArrayList;
 import java.util.List;

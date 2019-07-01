@@ -1,4 +1,4 @@
-package hu.eteosf.gergokovacs.userorders.service.mapper.dto;
+package hu.eteosf.gergokovacs.userorders.controller.mapper;
 
 import java.util.ArrayList;
 import java.util.List;

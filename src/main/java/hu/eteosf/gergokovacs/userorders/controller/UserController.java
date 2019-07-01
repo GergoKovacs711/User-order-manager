@@ -14,8 +14,8 @@ import javax.validation.Valid;
 import hu.eteosf.gergokovacs.userorders.model.dto.OrderDto;
 import hu.eteosf.gergokovacs.userorders.model.dto.UserDto;
 import hu.eteosf.gergokovacs.userorders.service.UserService;
-import hu.eteosf.gergokovacs.userorders.service.mapper.dto.OrderDtoMapper;
-import hu.eteosf.gergokovacs.userorders.service.mapper.dto.UserDtoMapper;
+import hu.eteosf.gergokovacs.userorders.controller.mapper.OrderDtoMapper;
+import hu.eteosf.gergokovacs.userorders.controller.mapper.UserDtoMapper;
 import io.swagger.api.UsersApi;
 import io.swagger.model.Order;
 import io.swagger.model.User;
@@ -95,7 +95,7 @@ public class UserController implements UsersApi {
     public ResponseEntity<List<User>> getAllUsers() {
         LOGGER.debug("in UserController.getAllUsers()");
 
-        final List<UserDto> userDtoList = userService.getAllUser();
+        final List<UserDto> userDtoList = userService.getAllUsers();
         final List<User> result = UserDtoMapper.toListOfUser(userDtoList);
 
         LOGGER.info("Retrieving all users is successful");

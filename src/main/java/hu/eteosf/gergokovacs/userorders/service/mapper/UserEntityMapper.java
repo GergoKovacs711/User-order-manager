@@ -1,4 +1,4 @@
-package hu.eteosf.gergokovacs.userorders.service.mapper.entity;
+package hu.eteosf.gergokovacs.userorders.service.mapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,19 +24,11 @@ public class UserEntityMapper {
     }
 
     public static List<UserDto> toListOfUserDtos(Iterable<UserEntity> iterable) {
+        if(iterable == null) return null;
         final List<UserDto> resultList = new ArrayList<>();
         for (UserEntity userEntity : iterable) {
             final UserDto userDto = toUserDto(userEntity);
             resultList.add(userDto);
-        }
-        return resultList;
-    }
-
-    public static List<UserEntity> toListOfUserEntities(Iterable<UserDto> iterable) {
-        final List<UserEntity> resultList = new ArrayList<>();
-        for (UserDto userDto : iterable) {
-            final UserEntity userEntity = toUserEntity(userDto);
-            resultList.add(userEntity);
         }
         return resultList;
     }

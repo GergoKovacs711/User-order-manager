@@ -1,4 +1,4 @@
-package hu.eteosf.gergokovacs.userorders.service.mapper.dto;
+package hu.eteosf.gergokovacs.userorders.controller.mapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +21,7 @@ public class OrderDtoMapper {
     }
 
     public static List<Order> toListOfOrders(List<OrderDto> list) {
+        if (list == null) return null;
         final List<Order> resultList = new ArrayList<>();
         for (OrderDto orderDto : list) {
             final Order order = toOrder(orderDto);
@@ -30,6 +31,7 @@ public class OrderDtoMapper {
     }
 
     public static List<OrderDto> toListOfOrderDtos(List<Order> list) {
+        if (list == null) return null;
         final List<OrderDto> resultList = new ArrayList<>();
         for (Order order : list) {
             final OrderDto orderDto = toOrderDto(order);

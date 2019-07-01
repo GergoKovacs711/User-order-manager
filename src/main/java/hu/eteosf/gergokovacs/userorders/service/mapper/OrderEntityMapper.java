@@ -1,4 +1,4 @@
-package hu.eteosf.gergokovacs.userorders.service.mapper.entity;
+package hu.eteosf.gergokovacs.userorders.service.mapper;
 
 import static hu.eteosf.gergokovacs.userorders.model.entity.OrderEntity.OrderEntitySatus;
 
@@ -10,7 +10,8 @@ import hu.eteosf.gergokovacs.userorders.model.entity.OrderEntity;
 
 public class OrderEntityMapper {
     public static OrderDto toOrderDto(OrderEntity orderEntity) {
-        return new OrderDto(orderEntity.getOrderId(), toOrderDtoStatus(orderEntity.getOrderStatus()), ProductEntityMapper.toListOfProductDtos(orderEntity.getProducts()));
+        return new OrderDto(orderEntity.getOrderId(), toOrderDtoStatus(orderEntity.getOrderStatus()),
+                            ProductEntityMapper.toListOfProductDtos(orderEntity.getProducts()));
     }
 
     public static OrderEntity toOrderEntity(OrderDto orderDto) {
@@ -23,6 +24,7 @@ public class OrderEntityMapper {
     }
 
     public static List<OrderDto> toListOfOrderDtos(List<OrderEntity> list) {
+        if (list == null) return null;
         final List<OrderDto> resultList = new ArrayList<>();
         for (OrderEntity orderEntity : list) {
             final OrderDto orderDto = toOrderDto(orderEntity);
@@ -32,6 +34,7 @@ public class OrderEntityMapper {
     }
 
     public static List<OrderEntity> toListOfOrderEntities(List<OrderDto> list) {
+        if (list == null) return null;
         final List<OrderEntity> resultList = new ArrayList<>();
         for (OrderDto orderDto : list) {
             final OrderEntity orderEntity = toOrderEntity(orderDto);
