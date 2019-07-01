@@ -13,9 +13,9 @@ public interface UserService {
     void deleteUser(String userId);
     void updateUser(String userId, User user);
 
+    OrderDto getOrderOfUser(String userId, String orderId);
     List<OrderDto> getAllOrdersOfUser(String userId);
     void createOrderOfUser(String userId, OrderDto order);
-    OrderDto getOrderOfUser(String userId, String orderId);
     void deleteOrderOfUser(String userId, String orderId);
     void updateOrderOfUser(String userId, String orderId, OrderDto order);
 }

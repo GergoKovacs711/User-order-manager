@@ -104,7 +104,7 @@ public class UserEntity {
     }
 
     public List<OrderEntity> getOrders() {
-        return Collections.unmodifiableList(orders);
+        return orders != null ? Collections.unmodifiableList(orders) : null;
     }
 
     public void setOrders(List<OrderEntity> orders) {

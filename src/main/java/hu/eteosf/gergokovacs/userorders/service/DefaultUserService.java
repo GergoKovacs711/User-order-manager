@@ -1,12 +1,12 @@
 package hu.eteosf.gergokovacs.userorders.service;
 
 import static hu.eteosf.gergokovacs.userorders.model.entity.OrderEntity.OrderEntitySatus;
-import static hu.eteosf.gergokovacs.userorders.service.mapper.entity.OrderEntityMapper.toListOfOrderDtos;
-import static hu.eteosf.gergokovacs.userorders.service.mapper.entity.OrderEntityMapper.toOrderDto;
-import static hu.eteosf.gergokovacs.userorders.service.mapper.entity.OrderEntityMapper.toOrderEntity;
-import static hu.eteosf.gergokovacs.userorders.service.mapper.entity.UserEntityMapper.toListOfUserDtos;
-import static hu.eteosf.gergokovacs.userorders.service.mapper.entity.UserEntityMapper.toUserDto;
-import static hu.eteosf.gergokovacs.userorders.service.mapper.entity.UserEntityMapper.toUserEntity;
+import static hu.eteosf.gergokovacs.userorders.service.mapper.OrderEntityMapper.toListOfOrderDtos;
+import static hu.eteosf.gergokovacs.userorders.service.mapper.OrderEntityMapper.toOrderDto;
+import static hu.eteosf.gergokovacs.userorders.service.mapper.OrderEntityMapper.toOrderEntity;
+import static hu.eteosf.gergokovacs.userorders.service.mapper.UserEntityMapper.toListOfUserDtos;
+import static hu.eteosf.gergokovacs.userorders.service.mapper.UserEntityMapper.toUserDto;
+import static hu.eteosf.gergokovacs.userorders.service.mapper.UserEntityMapper.toUserEntity;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,10 +23,13 @@ import hu.eteosf.gergokovacs.userorders.exception.UserCreationException;
 import hu.eteosf.gergokovacs.userorders.exception.UserNotFoundException;
 import hu.eteosf.gergokovacs.userorders.exception.UserUpdateException;
 import hu.eteosf.gergokovacs.userorders.model.dto.OrderDto;
+import hu.eteosf.gergokovacs.userorders.model.dto.ProductDto;
 import hu.eteosf.gergokovacs.userorders.model.dto.UserDto;
 import hu.eteosf.gergokovacs.userorders.model.entity.OrderEntity;
+import hu.eteosf.gergokovacs.userorders.model.entity.ProductEntity;
 import hu.eteosf.gergokovacs.userorders.model.entity.UserEntity;
 import hu.eteosf.gergokovacs.userorders.repository.UserRepository;
+import hu.eteosf.gergokovacs.userorders.service.mapper.ProductEntityMapper;
 import io.swagger.model.User;
 
 @Transactional
@@ -173,23 +176,19 @@ public class DefaultUserService implements UserService {
         final UserEntity fetchedUser = fetchUser(userId);
         final List<OrderEntity> orderEntities = fetchedUser.getOrders();
 
-        final OrderEntity resultOrder = processList(orderEntities, (OrderEntity entity) -> {
+        final OrderEntity fetchedOrder = processList(orderEntities, (OrderEntity entity) -> {
             if (entity.getOrderId().equals(orderId)) return entity;
             return null;
         });
-        if (resultOrder == null) throw new OrderNotFoundException("No order found by the ID: " + orderId);
-        if (resultOrder.getOrderStatus() != OrderEntitySatus.RECEIVED) {
-            throw new OrderUpdateException("Only orders with 'recieved' status can be updated");
+        if (fetchedOrder == null) throw new OrderNotFoundException("No order found by the ID: " + orderId);
+        if (fetchedOrder.getOrderStatus() != OrderEntitySatus.RECEIVED) {
+            throw new OrderUpdateException("Only orders with 'received' status can be updated");
         }
-        fetchedUser.removeOrder(resultOrder);
+        updateOrderEntity(orderDto, fetchedOrder);
         repository.save(fetchedUser);
 
-        final OrderEntity newOrder = toOrderEntity(orderDto);
-        newOrder.setOrderStatus(OrderEntitySatus.RECEIVED);
-        fetchedUser.addOrder(newOrder);
-
-        if (LOGGER.isDebugEnabled()) LOGGER.debug("The fetched user after the delete: " + fetchedUser.toString());
-        LOGGER.info("The order has been deleted");
+        if (LOGGER.isDebugEnabled()) LOGGER.debug("The fetched user after the update: " + fetchedUser.toString());
+        LOGGER.info("The order has been updated");
     }
 
     /**
@@ -219,6 +218,20 @@ public class DefaultUserService implements UserService {
         to.setFirstName(from.getFirstName());
         to.setLastName(from.getLastName());
         to.setAddress(from.getAddress());
+        return to;
+    }
+
+    /**
+     *  Updates the data of the order. It does not update the status of the order.
+     *
+     * @param from the data that is used to update the OrderEntity
+     * @param to the UserEntity to be updated
+     * @return the updated OrderEntity
+     */
+    private OrderEntity updateOrderEntity(final OrderDto from, final OrderEntity to) {
+        to.setOrderId(from.getOrderId());
+        to.setProducts(ProductEntityMapper.toListOfProductEntities(from.getProducts()));
+
         return to;
     }
 

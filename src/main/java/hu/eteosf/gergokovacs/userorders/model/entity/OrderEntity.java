@@ -80,7 +80,8 @@ public class OrderEntity {
     }
 
     public void setProducts(List<ProductEntity> products) {
-        this.products = products;
+        this.products.clear();
+        this.products.addAll(products);
         for (ProductEntity productEntity : products) {
             productEntity.setOrderEntity(this);
         }

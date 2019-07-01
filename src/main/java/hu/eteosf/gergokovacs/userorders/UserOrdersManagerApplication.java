@@ -5,9 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class UserOrdersManagerApplication {
-
 	public static void main(String[] args) {
 		SpringApplication.run(UserOrdersManagerApplication.class, args);
 	}
-
 }
