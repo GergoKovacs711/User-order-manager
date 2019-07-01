@@ -1,6 +1,6 @@
 package hu.eteosf.gergokovacs.userorders.service.mapper;
 
-import static hu.eteosf.gergokovacs.userorders.model.entity.OrderEntity.OrderEntitySatus;
+import static hu.eteosf.gergokovacs.userorders.model.entity.OrderEntity.OrderEntityStatus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +43,7 @@ public class OrderEntityMapper {
         return resultList;
     }
 
-    private static OrderDto.OrderDtoStatus toOrderDtoStatus(OrderEntitySatus status) {
+    private static OrderDto.OrderDtoStatus toOrderDtoStatus(OrderEntityStatus status) {
         switch (status) {
             case SHIPPED:
                 return OrderDto.OrderDtoStatus.SHIPPED;
@@ -56,14 +56,14 @@ public class OrderEntityMapper {
         }
     }
 
-    private static OrderEntitySatus toOrderEntityStatus(OrderDto.OrderDtoStatus status) {
+    private static OrderEntityStatus toOrderEntityStatus(OrderDto.OrderDtoStatus status) {
         switch (status) {
             case SHIPPED:
-                return OrderEntitySatus.SHIPPED;
+                return OrderEntityStatus.SHIPPED;
             case RECEIVED:
-                return OrderEntitySatus.RECEIVED;
+                return OrderEntityStatus.RECEIVED;
             case DELIVERED:
-                return OrderEntitySatus.DELIVERED;
+                return OrderEntityStatus.DELIVERED;
             default:
                 return null;
         }

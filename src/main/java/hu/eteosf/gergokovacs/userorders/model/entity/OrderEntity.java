@@ -33,7 +33,7 @@ public class OrderEntity {
 
     @Enumerated(value = EnumType.STRING)
     @Column(name = "status")
-    private OrderEntitySatus orderStatus;
+    private OrderEntityStatus orderStatus;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "orderEntity", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductEntity> products = new ArrayList<>();
@@ -44,7 +44,7 @@ public class OrderEntity {
 
     public OrderEntity() { }
 
-    public OrderEntity(String orderId, OrderEntitySatus orderStatus, List<ProductEntity> products, UserEntity user) {
+    public OrderEntity(String orderId, OrderEntityStatus orderStatus, List<ProductEntity> products, UserEntity user) {
         this.orderId = orderId;
         this.orderStatus = orderStatus;
         this.products = products;
@@ -67,11 +67,11 @@ public class OrderEntity {
         this.orderId = orderId;
     }
 
-    public OrderEntitySatus getOrderStatus() {
+    public OrderEntityStatus getOrderStatus() {
         return orderStatus;
     }
 
-    public void setOrderStatus(OrderEntitySatus orderStatus) {
+    public void setOrderStatus(OrderEntityStatus orderStatus) {
         this.orderStatus = orderStatus;
     }
 
@@ -120,14 +120,14 @@ public class OrderEntity {
                 + '}';
     }
 
-    public enum OrderEntitySatus {
+    public enum OrderEntityStatus {
         RECEIVED("RECEIVED"),
         SHIPPED("SHIPPED"),
         DELIVERED("DELIVERED");
 
-        private String value;
+        private final String value;
 
-        OrderEntitySatus(String value) {
+        OrderEntityStatus(String value) {
             this.value = value;
         }
 

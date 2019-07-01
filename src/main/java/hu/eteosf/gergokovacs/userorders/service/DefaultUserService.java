@@ -1,6 +1,6 @@
 package hu.eteosf.gergokovacs.userorders.service;
 
-import static hu.eteosf.gergokovacs.userorders.model.entity.OrderEntity.OrderEntitySatus;
+import static hu.eteosf.gergokovacs.userorders.model.entity.OrderEntity.OrderEntityStatus;
 import static hu.eteosf.gergokovacs.userorders.service.mapper.OrderEntityMapper.toListOfOrderDtos;
 import static hu.eteosf.gergokovacs.userorders.service.mapper.OrderEntityMapper.toOrderDto;
 import static hu.eteosf.gergokovacs.userorders.service.mapper.OrderEntityMapper.toOrderEntity;
@@ -23,10 +23,8 @@ import hu.eteosf.gergokovacs.userorders.exception.UserCreationException;
 import hu.eteosf.gergokovacs.userorders.exception.UserNotFoundException;
 import hu.eteosf.gergokovacs.userorders.exception.UserUpdateException;
 import hu.eteosf.gergokovacs.userorders.model.dto.OrderDto;
-import hu.eteosf.gergokovacs.userorders.model.dto.ProductDto;
 import hu.eteosf.gergokovacs.userorders.model.dto.UserDto;
 import hu.eteosf.gergokovacs.userorders.model.entity.OrderEntity;
-import hu.eteosf.gergokovacs.userorders.model.entity.ProductEntity;
 import hu.eteosf.gergokovacs.userorders.model.entity.UserEntity;
 import hu.eteosf.gergokovacs.userorders.repository.UserRepository;
 import hu.eteosf.gergokovacs.userorders.service.mapper.ProductEntityMapper;
@@ -126,7 +124,7 @@ public class DefaultUserService implements UserService {
         final UserEntity fetchedUser = fetchUser(userId);
         final OrderEntity newOrder = toOrderEntity(orderDto);
 
-        newOrder.setOrderStatus(OrderEntitySatus.RECEIVED);
+        newOrder.setOrderStatus(OrderEntityStatus.RECEIVED);
         fetchedUser.addOrder(newOrder);
         repository.save(fetchedUser);
 
@@ -139,13 +137,10 @@ public class DefaultUserService implements UserService {
         LOGGER.debug("In DefaultUserService.getOrderOfUser(userId: " + userId + ", orderId: " + orderId + ")");
         final UserEntity fetchedUser = fetchUser(userId);
         final List<OrderEntity> orderEntities = fetchedUser.getOrders();
+        final OrderEntity fetchedOrder = searchForOrderById(orderEntities, orderId);
 
-        final OrderEntity resultOrder = processList(orderEntities, (OrderEntity entity) -> {
-            if (entity.getOrderId().equals(orderId)) return entity;
-            return null;
-        });
-        if (resultOrder == null) throw new OrderNotFoundException("No order found by the ID: " + orderId);
-        return toOrderDto(resultOrder);
+        if (fetchedOrder == null) throw new OrderNotFoundException("No order found by the ID: " + orderId);
+        return toOrderDto(fetchedOrder);
     }
 
     @Override
@@ -153,16 +148,13 @@ public class DefaultUserService implements UserService {
         LOGGER.debug("In DefaultUserService.deleteOrderOfUser(userId: " + userId + ", orderId: " + orderId + ")");
         final UserEntity fetchedUser = fetchUser(userId);
         final List<OrderEntity> orderEntities = fetchedUser.getOrders();
+        final OrderEntity fetchedOrder = searchForOrderById(orderEntities, orderId);
 
-        final OrderEntity resultOrder = processList(orderEntities, (OrderEntity entity) -> {
-            if (entity.getOrderId().equals(orderId)) return entity;
-            return null;
-        });
-        if (resultOrder == null) throw new OrderNotFoundException("No order found by the ID: " + orderId);
-        if (resultOrder.getOrderStatus() != OrderEntitySatus.RECEIVED) {
+        if (fetchedOrder == null) throw new OrderNotFoundException("No order found by the ID: " + orderId);
+        if (fetchedOrder.getOrderStatus() != OrderEntityStatus.RECEIVED) {
             throw new OrderUpdateException("Only orders with 'received' status can be updated");
         }
-        fetchedUser.removeOrder(resultOrder);
+        fetchedUser.removeOrder(fetchedOrder);
         repository.save(fetchedUser);
 
         if (LOGGER.isDebugEnabled()) LOGGER.debug("The fetched user after the delete: " + fetchedUser.toString());
@@ -171,17 +163,15 @@ public class DefaultUserService implements UserService {
 
     @Override
     public void updateOrderOfUser(String userId, String orderId, OrderDto orderDto) {
-        LOGGER.debug("In DefaultUserService.deleteOrderOfUser(userId: " +
-                        userId + ", orderId: " + orderId + ", orderDto:" + orderDto.toString() + ")");
+        LOGGER.debug(
+                "In DefaultUserService.deleteOrderOfUser(userId: " + userId + ", orderId: " + orderId + ", orderDto:" + orderDto.toString()
+                        + ")");
         final UserEntity fetchedUser = fetchUser(userId);
         final List<OrderEntity> orderEntities = fetchedUser.getOrders();
+        final OrderEntity fetchedOrder = searchForOrderById(orderEntities, orderId);
 
-        final OrderEntity fetchedOrder = processList(orderEntities, (OrderEntity entity) -> {
-            if (entity.getOrderId().equals(orderId)) return entity;
-            return null;
-        });
         if (fetchedOrder == null) throw new OrderNotFoundException("No order found by the ID: " + orderId);
-        if (fetchedOrder.getOrderStatus() != OrderEntitySatus.RECEIVED) {
+        if (fetchedOrder.getOrderStatus() != OrderEntityStatus.RECEIVED) {
             throw new OrderUpdateException("Only orders with 'received' status can be updated");
         }
         updateOrderEntity(orderDto, fetchedOrder);
@@ -200,10 +190,25 @@ public class DefaultUserService implements UserService {
     private UserEntity fetchUser(String userId) {
         final Optional<UserEntity> user = repository.findByUserId(userId);
         if (!user.isPresent()) {
-            throw new UserNotFoundException("No user found by the ID: " + userId);
+            throw new UserNotFoundException("No user found by ID: " + userId);
         }
         if (LOGGER.isDebugEnabled()) LOGGER.debug("The retrieved entity: " + user.get().toString());
         return user.get();
+    }
+
+    /**
+     * Processes through the list and returns the order which has an id that matches with orderId or null if no matching order was found.
+     *
+     * @param list the list to be processed
+     * @return the matching OrderEntity or null
+     */
+    private OrderEntity searchForOrderById(List<OrderEntity> list, String orderId) {
+        OrderEntity result = null;
+        for (OrderEntity item : list) {
+            if (item.getOrderId().equals(orderId))
+                result = item;
+        }
+        return result;
     }
 
     /**
@@ -222,37 +227,13 @@ public class DefaultUserService implements UserService {
     }
 
     /**
-     *  Updates the data of the order. It does not update the status of the order.
+     * Updates the data of the order. It does not update the status of the order.
      *
      * @param from the data that is used to update the OrderEntity
-     * @param to the UserEntity to be updated
-     * @return the updated OrderEntity
+     * @param to   the UserEntity to be updated
      */
-    private OrderEntity updateOrderEntity(final OrderDto from, final OrderEntity to) {
+    private void updateOrderEntity(final OrderDto from, final OrderEntity to) {
         to.setOrderId(from.getOrderId());
         to.setProducts(ProductEntityMapper.toListOfProductEntities(from.getProducts()));
-
-        return to;
-    }
-
-    /**
-     * Processes through the list with the given lambda, if the result of the lambda is not null then the method returns early.
-     *
-     * @param list   the list to be processed
-     * @param lambda the calculation that has to be done on each of the given items
-     * @return the last output of the lambda expression
-     */
-    private OrderEntity processList(List<OrderEntity> list, OrderEntityLambda lambda) {
-        OrderEntity result = null;
-        for (OrderEntity item : list) {
-            result = lambda.process(item);
-            if (result != null) break;
-        }
-        return result;
-    }
-
-    @FunctionalInterface
-    interface OrderEntityLambda {
-        OrderEntity process(final OrderEntity data);
     }
 }

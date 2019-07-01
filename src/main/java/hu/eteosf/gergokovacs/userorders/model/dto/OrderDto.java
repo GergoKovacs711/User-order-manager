@@ -31,7 +31,7 @@ public class OrderDto {
         SHIPPED("SHIPPED"),
         DELIVERED("DELIVERED");
 
-        private String value;
+        final private String value;
         OrderDtoStatus(String value) {
             this.value = value;
         }

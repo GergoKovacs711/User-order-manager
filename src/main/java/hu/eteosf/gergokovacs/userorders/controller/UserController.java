@@ -23,7 +23,7 @@ import io.swagger.model.User;
 @RestController
 public class UserController implements UsersApi {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
-    private UserService userService;
+    private final UserService userService;
 
     @Autowired
     public UserController(UserService userService) {
