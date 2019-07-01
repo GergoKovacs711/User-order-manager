@@ -121,10 +121,10 @@ public class DefaultUserService implements UserService {
     public void createOrderOfUser(String userId, OrderDto orderDto) {
         LOGGER.debug("In DefaultUserService.createOrderOfUser(userId: " + userId + ", orderDto: " + orderDto.toString() + ")");
         final UserEntity fetchedUser = fetchUser(userId);
-        final OrderEntity orderEntity = toOrderEntity(orderDto);
+        final OrderEntity newOrder = toOrderEntity(orderDto);
 
-        orderEntity.setOrderStatus(OrderEntitySatus.RECEIVED);
-        fetchedUser.addOrder(orderEntity);
+        newOrder.setOrderStatus(OrderEntitySatus.RECEIVED);
+        fetchedUser.addOrder(newOrder);
         repository.save(fetchedUser);
 
         if (LOGGER.isDebugEnabled()) LOGGER.debug("The updated user's orders: " + fetchedUser.getOrders().toString());
@@ -157,7 +157,7 @@ public class DefaultUserService implements UserService {
         });
         if (resultOrder == null) throw new OrderNotFoundException("No order found by the ID: " + orderId);
         if (resultOrder.getOrderStatus() != OrderEntitySatus.RECEIVED) {
-            throw new OrderUpdateException("Only orders with 'recieved' status can be updated");
+            throw new OrderUpdateException("Only orders with 'received' status can be updated");
         }
         fetchedUser.removeOrder(resultOrder);
         repository.save(fetchedUser);
@@ -184,9 +184,9 @@ public class DefaultUserService implements UserService {
         fetchedUser.removeOrder(resultOrder);
         repository.save(fetchedUser);
 
-        final OrderEntity orderEntity = toOrderEntity(orderDto);
-        orderEntity.setOrderStatus(OrderEntitySatus.RECEIVED);
-        fetchedUser.addOrder(orderEntity);
+        final OrderEntity newOrder = toOrderEntity(orderDto);
+        newOrder.setOrderStatus(OrderEntitySatus.RECEIVED);
+        fetchedUser.addOrder(newOrder);
 
         if (LOGGER.isDebugEnabled()) LOGGER.debug("The fetched user after the delete: " + fetchedUser.toString());
         LOGGER.info("The order has been deleted");
@@ -199,12 +199,12 @@ public class DefaultUserService implements UserService {
      * @return the found user
      */
     private UserEntity fetchUser(String userId) {
-        final Optional<UserEntity> userEntityOptional = repository.findByUserId(userId);
-        if (!userEntityOptional.isPresent()) {
+        final Optional<UserEntity> user = repository.findByUserId(userId);
+        if (!user.isPresent()) {
             throw new UserNotFoundException("No user found by the ID: " + userId);
         }
-        if (LOGGER.isDebugEnabled()) LOGGER.debug("The retrieved entity: " + userEntityOptional.get().toString());
-        return userEntityOptional.get();
+        if (LOGGER.isDebugEnabled()) LOGGER.debug("The retrieved entity: " + user.get().toString());
+        return user.get();
     }
 
     /**
