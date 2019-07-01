@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>hu.eteosf.gergokovacs.userorders</groupId>
 	<artifactId>user-orders-manager</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0-SNAPSHOT</version>
 	<name>user-orders-manager</name>
 	<description>A system for managing orders of users</description>
 
