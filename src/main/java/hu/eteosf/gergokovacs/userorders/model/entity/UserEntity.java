@@ -108,7 +108,10 @@ public class UserEntity {
     }
 
     public void setOrders(List<OrderEntity> orders) {
-        this.orders = orders;
+        if(orders == null) return;
+
+        this.orders.clear();
+        this.orders.addAll(orders);
         for (OrderEntity orderEntity : orders) {
             orderEntity.setUser(this);
         }

@@ -39,7 +39,7 @@ public class UserDto {
     }
 
     public List<OrderDto> getOrders() {
-        return Collections.unmodifiableList(orders);
+        return orders != null ? Collections.unmodifiableList(orders) : null;
     }
 
     @Override

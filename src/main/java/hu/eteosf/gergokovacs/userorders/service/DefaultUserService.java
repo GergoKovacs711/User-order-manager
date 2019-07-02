@@ -76,7 +76,8 @@ public class DefaultUserService implements UserService {
         LOGGER.debug("The mapped userEntity is : " + userEntity.toString());
 
         final UserEntity resultEntity = repository.save(userEntity);
-        if (LOGGER.isDebugEnabled()) LOGGER.debug("The resultEntity: " + resultEntity.toString());
+        if (LOGGER.isDebugEnabled())
+            LOGGER.debug("The resultEntity: " + resultEntity.toString());
         LOGGER.info("User has been created");
     }
 
