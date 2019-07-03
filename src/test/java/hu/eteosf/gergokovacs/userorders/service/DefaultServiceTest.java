@@ -110,11 +110,10 @@ public class DefaultServiceTest {
     public void whenCallingGetUser_withNonExistentId_shouldThrowException() {
         // Given
         final String userId1 = "1";
-        final UserEntity repoUserEntity1 = new UserEntity(userId1, "first1", "last1", "address1", null);
         when(userRepository.findByUserId(userId1)).thenReturn(Optional.empty());
 
         // When
-        final UserDto resultUserDto1 = userService.getUser(userId1);
+        userService.getUser(userId1);
     }
 
     @Test
@@ -243,13 +242,28 @@ public class DefaultServiceTest {
     public void whenCallingDeleteUser_withNonExistentUserId_shouldThrowUserNotFoundException() {
         // Given
         final String userId1 = "1";
-        final UserEntity expectedEntity1 = new UserEntity(userId1, "first1", "last1", "address1", new ArrayList<>());
 
         Mockito.when(userRepository.findByUserId(userId1)).thenReturn(Optional.empty());
-
-        ArgumentCaptor<UserEntity> captor = ArgumentCaptor.forClass(UserEntity.class);
 
         // When
         userService.deleteUser(userId1);
     }
+
+    @Test
+    public void whenCallingUpdateUser_withExistingUserId_shouldReturnTheExistingUser() {
+
+    }
+
+    @Test(expected = UserNotFoundException.class)
+    public void whenCallingUpdateUser_withNonExistentUserId_shouldThrowUserNotFoundException() {
+        // Given
+        final String userId1 = "1";
+        final UserDto userDto1 = new UserDto(userId1, "first1", "last1", "address1", new ArrayList<>());
+        Mockito.when(userRepository.findByUserId(userId1)).thenReturn(Optional.empty());
+
+        // When
+        userService.updateUser(userId1, userDto1);
+    }
+
+
 }
