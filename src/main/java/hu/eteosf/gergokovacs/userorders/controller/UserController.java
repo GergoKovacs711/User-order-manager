@@ -128,7 +128,7 @@ public class UserController implements UsersApi {
     public ResponseEntity<Void> updateUserById(@Valid User body, String userId) {
         LOGGER.debug("in UserController.updateUserById(body: " + body.toString() + ", id:" + userId + ")");
 
-        userService.updateUser(userId, body);
+        userService.updateUser(userId, UserDtoMapper.toUserDto(body));
 
         LOGGER.info("User update is successful");
         return ResponseEntity.ok().build();

@@ -4,14 +4,13 @@ import java.util.List;
 
 import hu.eteosf.gergokovacs.userorders.model.dto.OrderDto;
 import hu.eteosf.gergokovacs.userorders.model.dto.UserDto;
-import io.swagger.model.User;
 
 public interface UserService {
     UserDto getUser(String userId);
     List<UserDto> getAllUsers();
-    void createUser(UserDto user);
+    void createUser(UserDto userDto);
     void deleteUser(String userId);
-    void updateUser(String userId, User user);
+    void updateUser(String userId, UserDto userDto);
 
     OrderDto getOrderOfUser(String userId, String orderId);
     List<OrderDto> getAllOrdersOfUser(String userId);

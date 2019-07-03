@@ -28,7 +28,6 @@ import hu.eteosf.gergokovacs.userorders.model.entity.OrderEntity;
 import hu.eteosf.gergokovacs.userorders.model.entity.UserEntity;
 import hu.eteosf.gergokovacs.userorders.repository.UserRepository;
 import hu.eteosf.gergokovacs.userorders.service.mapper.ProductEntityMapper;
-import io.swagger.model.User;
 
 @Transactional
 @Service
@@ -90,13 +89,13 @@ public class DefaultUserService implements UserService {
     }
 
     @Override
-    public void updateUser(String userId, User user) {
-        LOGGER.debug("In DefaultUserService.updateUser(userId: " + userId + ", user: " + user.toString() + ")");
-        if (user.getOrders() != null && user.getOrders().size() != 0) {
+    public void updateUser(String userId, UserDto userDto) {
+        LOGGER.debug("In DefaultUserService.updateUser(userId: " + userId + ", userDto: " + userDto.toString() + ")");
+        if (userDto.getOrders() != null && userDto.getOrders().size() != 0) {
             throw new UserUpdateException("The orders field must be null or an empty array");
         }
         final UserEntity fetchedUser = fetchUser(userId);
-        final UserEntity resultEntity = updateUserEntity(user, fetchedUser);
+        final UserEntity resultEntity = updateUserEntity(userDto, fetchedUser);
         LOGGER.debug("The updated entity: " + resultEntity.toString());
 
         repository.save(resultEntity);
@@ -219,7 +218,7 @@ public class DefaultUserService implements UserService {
      * @param to   the UserEntity to be updated
      * @return the updated UserEntity
      */
-    private UserEntity updateUserEntity(User from, UserEntity to) {
+    private UserEntity updateUserEntity(UserDto from, UserEntity to) {
         to.setUserId(from.getUserId());
         to.setFirstName(from.getFirstName());
         to.setLastName(from.getLastName());
