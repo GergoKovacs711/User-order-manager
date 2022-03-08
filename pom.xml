@@ -21,7 +21,7 @@
 		<swagger-annotations.version>1.5.21</swagger-annotations.version>
 		<togglz-spring-boot-starter.version>2.6.1.Final</togglz-spring-boot-starter.version>
 		<spring-boot-starter.version>2.1.6.RELEASE</spring-boot-starter.version>
-		<org.liquibase.version>3.6.3</org.liquibase.version>
+		<org.liquibase.version>4.8.0</org.liquibase.version>
 		<com.h2database.version>1.4.197</com.h2database.version>
 	</properties>
 
